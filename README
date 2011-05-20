@@ -7,7 +7,7 @@
 Nocco is a quick-and-dirty, literate-programming-style
 documentation generator. For more information, see:
 
-http://url/to/come
+http://dontangg.github.com/nocco
 
 Nocco is a port of Docco, the original quick-and-dirty, literate-programming-style
 documentation generator written in CoffeeScript.
