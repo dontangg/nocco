@@ -1,0 +1,116 @@
+<!DOCTYPE html />
+
+<html>
+<head>
+	<title>TemplateBase.cs</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link href="nocco.css" rel="stylesheet" media="all" type="text/css" />
+</head>
+<body>
+	<div id="container">
+		<div id="background"></div>
+			<div id="jump_to">
+				Jump To &hellip;
+				<div id="jump_wrapper">
+					<div id="jump_page">
+							<a class="source" href="language.html">
+								Language.cs
+							</a>
+							<a class="source" href="nocco.html">
+								Nocco.cs
+							</a>
+							<a class="source" href="program.html">
+								Program.cs
+							</a>
+							<a class="source" href="section.html">
+								Section.cs
+							</a>
+							<a class="source" href="templatebase.html">
+								TemplateBase.cs
+							</a>
+							<a class="source" href="properties/assemblyinfo.html">
+								Properties\AssemblyInfo.cs
+							</a>
+					</div>
+				</div>
+			</div>
+		<table cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<th class="docs">
+						<h1>TemplateBase.cs</h1>
+					</th>
+					<th class="code"></th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr id="section_1">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_1">&#182;</a>
+							</div>
+							<p>A class to be used as the base class for the generated template.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.IO</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Nocco</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">TemplateBase</span> <span class="p">{</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_2">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_2">&#182;</a>
+							</div>
+							<p>Properties available from within the template</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">public</span> <span class="kt">string</span> <span class="n">Title</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="kt">string</span> <span class="n">PathToCss</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="n">Func</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">GetSourcePath</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">Sections</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">Sources</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+		<span class="k">public</span> <span class="n">StringBuilder</span> <span class="n">Buffer</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+		<span class="k">public</span> <span class="nf">TemplateBase</span><span class="p">()</span> <span class="p">{</span>
+			<span class="n">Buffer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_3">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_3">&#182;</a>
+							</div>
+							<p>This <code>Execute</code> function will be defined in the inheriting template
+class. It generates the HTML by calling <code>Write</code> and <code>WriteLiteral</code>.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">public</span> <span class="k">abstract</span> <span class="k">void</span> <span class="nf">Execute</span><span class="p">();</span>
+
+		<span class="k">public</span> <span class="k">virtual</span> <span class="k">void</span> <span class="nf">Write</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">WriteLiteral</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+		<span class="p">}</span>
+
+		<span class="k">public</span> <span class="k">virtual</span> <span class="k">void</span> <span class="nf">WriteLiteral</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">Buffer</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+						</td>
+					</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

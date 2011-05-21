@@ -1,0 +1,79 @@
+<!DOCTYPE html />
+
+<html>
+<head>
+	<title>Language.cs</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link href="nocco.css" rel="stylesheet" media="all" type="text/css" />
+</head>
+<body>
+	<div id="container">
+		<div id="background"></div>
+			<div id="jump_to">
+				Jump To &hellip;
+				<div id="jump_wrapper">
+					<div id="jump_page">
+							<a class="source" href="language.html">
+								Language.cs
+							</a>
+							<a class="source" href="nocco.html">
+								Nocco.cs
+							</a>
+							<a class="source" href="program.html">
+								Program.cs
+							</a>
+							<a class="source" href="section.html">
+								Section.cs
+							</a>
+							<a class="source" href="templatebase.html">
+								TemplateBase.cs
+							</a>
+							<a class="source" href="properties/assemblyinfo.html">
+								Properties\AssemblyInfo.cs
+							</a>
+					</div>
+				</div>
+			</div>
+		<table cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<th class="docs">
+						<h1>Language.cs</h1>
+					</th>
+					<th class="code"></th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr id="section_1">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_1">&#182;</a>
+							</div>
+							<p>A smart class used for generating nice HTML based on the language of your
+choice.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System.Text.RegularExpressions</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Nocco</span>
+<span class="p">{</span>
+	<span class="k">class</span> <span class="nc">Language</span>
+	<span class="p">{</span>
+		<span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+		<span class="k">public</span> <span class="kt">string</span> <span class="n">Symbol</span><span class="p">;</span>
+		<span class="k">public</span> <span class="n">Regex</span> <span class="n">CommentMatcher</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Regex</span><span class="p">(</span><span class="s">@&quot;^\s*&quot;</span> <span class="p">+</span> <span class="n">Symbol</span> <span class="p">+</span> <span class="s">@&quot;\s?&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="n">Regex</span> <span class="n">CommentFilter</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Regex</span><span class="p">(</span><span class="s">@&quot;(^#![/]|^\s*#\{)&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="kt">string</span> <span class="n">DividerText</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="s">&quot;\n&quot;</span> <span class="p">+</span> <span class="n">Symbol</span> <span class="p">+</span> <span class="s">&quot;DIVIDER\n&quot;</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+		<span class="k">public</span> <span class="n">Regex</span> <span class="n">DividerHTML</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Regex</span><span class="p">(</span><span class="s">@&quot;\n*&lt;span class=&quot;&quot;c1?&quot;&quot;&gt;&quot;</span> <span class="p">+</span> <span class="n">Symbol</span> <span class="p">+</span> <span class="s">@&quot;DIVIDER&lt;\/span&gt;\n*&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+						</td>
+					</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
