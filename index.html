@@ -1,81 +1,459 @@
-<!DOCTYPE html>
+<!DOCTYPE html />
+
 <html>
 <head>
-  <meta charset='utf-8'>
-  <meta http-equiv="Refresh" content="0;url=http://dontangg.github.com/nocco/Nocco.html">
-  <title>dontangg/nocco @ GitHub</title>
-
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #79a3d2;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #865c2d; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #865c2d; }
-    h3 { text-align: center; color: #865c2d; }
-    a { color: #865c2d; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
+	<title>Nocco.cs</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link href="nocco.css" rel="stylesheet" media="all" type="text/css" />
 </head>
-
 <body>
-  <a href="http://github.com/dontangg/nocco"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	<div id="container">
+		<div id="background"></div>
+			<div id="jump_to">
+				Jump To &hellip;
+				<div id="jump_wrapper">
+					<div id="jump_page">
+							<a class="source" href="language.html">
+								Language.cs
+							</a>
+							<a class="source" href="index.html">
+								Nocco.cs
+							</a>
+							<a class="source" href="program.html">
+								Program.cs
+							</a>
+							<a class="source" href="section.html">
+								Section.cs
+							</a>
+							<a class="source" href="templatebase.html">
+								TemplateBase.cs
+							</a>
+							<a class="source" href="properties/assemblyinfo.html">
+								Properties\AssemblyInfo.cs
+							</a>
+					</div>
+				</div>
+			</div>
+		<table cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<th class="docs">
+						<h1>Nocco.cs</h1>
+					</th>
+					<th class="code"></th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr id="section_1">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_1">&#182;</a>
+							</div>
+							<p><strong>Nocco</strong> is a quick-and-dirty, literate-programming-style documentation
+generator. It is a C# port of <a href="http://jashkenas.github.com/docco/">Docco</a>,
+which was written in Coffescript and runs on node.js.</p>
 
-  <div id="container">
+<p>Nocco produces HTML that displays your comments alongside your code.
+Comments are passed through
+<a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>, and code is
+passed through <a href="http://pygments.org/">Pygments</a> syntax highlighting. This
+page is the result of running Nocco against its own source files.</p>
 
-    <div class="download">
-      <a href="http://github.com/dontangg/nocco/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/dontangg/nocco/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
+<p>To use Nocco, run it from the command-line:</p>
 
-    <h1><a href="http://github.com/dontangg/nocco">nocco</a>
-      <span class="small">by <a href="http://github.com/dontangg">dontangg</a></span></h1>
+<pre><code>nocco *.cs
+</code></pre>
 
-    <div class="description">
-      Literate Programming can be Quick and Dirty.
-    </div>
+<p>...will generate linked HTML documentation for the named source files, saving
+it into a <code>docs</code> folder.</p>
 
-    <h2>License</h2>
-<p>MIT Expat License</p>
-<h2>Authors</h2>
-<p>Don Wilson
-<br/>
-<br/>      </p>
+<p>The <a href="http://github.com/dontangg/nocco">source for Nocco</a> is available on GitHub,
+and released under the MIT license.</p>
 
-<h2>Coming Soon...</h2>
-<p>I'll soon be replacing this page with the actual output of nocco on its own source files.</p>
+<p>If <strong>.NET</strong> doesn't run on your platform, or you'd prefer a more convenient
+package, get <a href="http://rtomayko.github.com/rocco/">Rocco</a>, the Ruby port that's
+available as a gem. If you're writing shell scripts, try
+<a href="http://rtomayko.github.com/shocco/">Shocco</a>, a port for the <strong>POSIX shell</strong>.
+Both are by <a href="http://github.com/rtomayko">Ryan Tomayko</a>. If Python's more
+your speed, take a look at <a href="http://github.com/fitzgen">Nick Fitzgerald</a>'s
+<a href="http://fitzgen.github.com/pycco/">Pycco</a>.</p>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/dontangg/nocco/zipball/master">zip</a> or
-      <a href="http://github.com/dontangg/nocco/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/dontangg/nocco</pre>
-    </p>
+						</td>
+						<td class="code">
+							<div class='highlight'><pre></pre></div>
+						</td>
+					</tr>
+					<tr id="section_2">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_2">&#182;</a>
+							</div>
+							<p>Import namespaces to allow us to type shorter type names.</p>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/dontangg/nocco">dontangg/nocco</a>
-    </div>
+						</td>
+						<td class="code">
+							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.CodeDom.Compiler</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.IO</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Net</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Web.Razor</span><span class="p">;</span>
 
-  </div>
+<span class="k">namespace</span> <span class="nn">Nocco</span> <span class="p">{</span>
+	<span class="k">class</span> <span class="nc">Nocco</span> <span class="p">{</span>
+		<span class="k">private</span> <span class="k">static</span> <span class="kt">string</span> <span class="n">ExecutingDirectory</span><span class="p">;</span>
+		<span class="k">private</span> <span class="k">static</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">Files</span><span class="p">;</span>
+		<span class="k">private</span> <span class="k">static</span> <span class="n">Type</span> <span class="n">TemplateType</span><span class="p">;</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_3">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_3">&#182;</a>
+							</div>
+							<h3>Main Documentation Generation Functions</h3>
 
-  
+						</td>
+						<td class="code">
+							<div class='highlight'><pre></pre></div>
+						</td>
+					</tr>
+					<tr id="section_4">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_4">&#182;</a>
+							</div>
+							<p>Generate the documentation for a source file by reading it in, splitting it
+up into comment/code sections, highlighting them for the appropriate language,
+and merging them into an HTML template.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">GenerateDocumentation</span><span class="p">(</span><span class="kt">string</span> <span class="n">source</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">var</span> <span class="n">lines</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllLines</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+			<span class="n">var</span> <span class="n">sections</span> <span class="p">=</span> <span class="n">Parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">lines</span><span class="p">);</span>
+			<span class="n">Hightlight</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sections</span><span class="p">);</span>
+			<span class="n">GenerateHtml</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sections</span><span class="p">);</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_5">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_5">&#182;</a>
+							</div>
+							<p>Given a string of source code, parse out each comment and the code that
+follows it, and create an individual <code>Section</code> for it.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">Parse</span><span class="p">(</span><span class="kt">string</span> <span class="n">source</span><span class="p">,</span> <span class="kt">string</span><span class="p">[]</span> <span class="n">lines</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">sections</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;();</span>
+			<span class="n">var</span> <span class="n">language</span> <span class="p">=</span> <span class="n">GetLanguage</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+			<span class="n">var</span> <span class="n">hasCode</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+			<span class="n">var</span> <span class="n">docsText</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+			<span class="n">var</span> <span class="n">codeText</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+
+			<span class="n">Action</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">save</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">docs</span><span class="p">,</span> <span class="kt">string</span> <span class="n">code</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">sections</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">Section</span><span class="p">()</span> <span class="p">{</span> <span class="n">DocsHtml</span> <span class="p">=</span> <span class="n">docs</span><span class="p">,</span> <span class="n">CodeHtml</span> <span class="p">=</span> <span class="n">code</span> <span class="p">});</span>
+
+			<span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">line</span> <span class="k">in</span> <span class="n">lines</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">language</span><span class="p">.</span><span class="n">CommentMatcher</span><span class="p">.</span><span class="n">IsMatch</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="n">language</span><span class="p">.</span><span class="n">CommentFilter</span><span class="p">.</span><span class="n">IsMatch</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">hasCode</span><span class="p">)</span> <span class="p">{</span>
+						<span class="n">save</span><span class="p">(</span><span class="n">docsText</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span> <span class="n">codeText</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+						<span class="n">hasCode</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+						<span class="n">docsText</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+						<span class="n">codeText</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+					<span class="p">}</span>
+					<span class="n">docsText</span><span class="p">.</span><span class="n">AppendLine</span><span class="p">(</span><span class="n">language</span><span class="p">.</span><span class="n">CommentMatcher</span><span class="p">.</span><span class="n">Replace</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">));</span>
+				<span class="p">}</span>
+				<span class="k">else</span> <span class="p">{</span>
+					<span class="n">hasCode</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+					<span class="n">codeText</span><span class="p">.</span><span class="n">AppendLine</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="n">save</span><span class="p">(</span><span class="n">docsText</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span> <span class="n">codeText</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+
+			<span class="k">return</span> <span class="n">sections</span><span class="p">;</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_6">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_6">&#182;</a>
+							</div>
+							<p>Highlights a single chunk of code, using a web service for <strong>Pygments</strong>,
+and runs the text of its corresponding comment through <strong>Markdown</strong>, using a
+C# implementation called <a href="http://code.google.com/p/markdownsharp/">MarkdownSharp</a>.</p>
+
+<p>We process the entire file in a single call to Pygments by inserting little
+marker comments between each section and then splitting the result string
+wherever our markers occur.</p>
+
+<p>TODO: Switch to <a href="http://code.google.com/p/google-code-prettify/">prettify</a>.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Hightlight</span><span class="p">(</span><span class="kt">string</span> <span class="n">source</span><span class="p">,</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">sections</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">var</span> <span class="n">language</span> <span class="p">=</span> <span class="n">GetLanguage</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+
+			<span class="n">var</span> <span class="n">request</span> <span class="p">=</span> <span class="p">(</span><span class="n">HttpWebRequest</span><span class="p">)</span><span class="n">WebRequest</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;http://pygments.appspot.com/&quot;</span><span class="p">);</span>
+			<span class="n">request</span><span class="p">.</span><span class="n">Method</span> <span class="p">=</span> <span class="s">&quot;POST&quot;</span><span class="p">;</span>
+			<span class="n">request</span><span class="p">.</span><span class="n">ContentType</span> <span class="p">=</span> <span class="s">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">;</span>
+
+			<span class="n">var</span> <span class="n">allCodeText</span> <span class="p">=</span> <span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="n">language</span><span class="p">.</span><span class="n">DividerText</span><span class="p">,</span> <span class="n">sections</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">s</span><span class="p">.</span><span class="n">CodeHtml</span><span class="p">));</span>
+			<span class="kt">string</span> <span class="n">postData</span> <span class="p">=</span> <span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;lang={0}&amp;code={1}&quot;</span><span class="p">,</span> <span class="n">language</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">HttpUtility</span><span class="p">.</span><span class="n">UrlEncode</span><span class="p">(</span><span class="n">allCodeText</span><span class="p">));</span>
+			<span class="kt">byte</span><span class="p">[]</span> <span class="n">byteArray</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="n">postData</span><span class="p">);</span>
+			<span class="n">request</span><span class="p">.</span><span class="n">ContentLength</span> <span class="p">=</span> <span class="n">byteArray</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span>
+			<span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">stream</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GetRequestStream</span><span class="p">())</span> <span class="p">{</span>
+				<span class="n">stream</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">byteArray</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">byteArray</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="n">var</span> <span class="n">response</span> <span class="p">=</span> <span class="p">(</span><span class="n">HttpWebResponse</span><span class="p">)</span><span class="n">request</span><span class="p">.</span><span class="n">GetResponse</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">StatusCode</span> <span class="p">==</span> <span class="n">HttpStatusCode</span><span class="p">.</span><span class="n">OK</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">stream</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">GetResponseStream</span><span class="p">())</span> <span class="p">{</span>
+					<span class="n">var</span> <span class="n">reader</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StreamReader</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+					<span class="n">allCodeText</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadToEnd</span><span class="p">();</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+
+			<span class="n">allCodeText</span> <span class="p">=</span> <span class="n">allCodeText</span><span class="p">.</span><span class="n">Replace</span><span class="p">(</span><span class="s">&quot;&lt;div class=\&quot;highlight\&quot;&gt;&lt;pre&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&quot;&lt;/pre&gt;&lt;/div&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">);</span>
+			<span class="n">var</span> <span class="n">fragments</span> <span class="p">=</span> <span class="n">language</span><span class="p">.</span><span class="n">DividerHTML</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="n">allCodeText</span><span class="p">);</span>
+
+			<span class="n">var</span> <span class="n">markdown</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MarkdownSharp</span><span class="p">.</span><span class="n">Markdown</span><span class="p">();</span>
+
+			<span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span><span class="p">=</span><span class="m">0</span><span class="p">;</span> <span class="n">i</span><span class="p">&lt;</span><span class="n">sections</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+				<span class="n">var</span> <span class="n">section</span> <span class="p">=</span> <span class="n">sections</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+				<span class="n">section</span><span class="p">.</span><span class="n">DocsHtml</span> <span class="p">=</span> <span class="n">markdown</span><span class="p">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">section</span><span class="p">.</span><span class="n">DocsHtml</span><span class="p">);</span>
+				<span class="n">section</span><span class="p">.</span><span class="n">CodeHtml</span> <span class="p">=</span> <span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;&lt;div class=&#39;highlight&#39;&gt;&lt;pre&gt;{0}&lt;/pre&gt;&lt;/div&gt;&quot;</span><span class="p">,</span> <span class="n">fragments</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+			<span class="p">}</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_7">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_7">&#182;</a>
+							</div>
+							<p>Once all of the code is finished highlighting, we can generate the HTML file
+and write out the documentation. Pass the completed sections into the template
+found in <code>Resources/Nocco.cshtml</code></p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">GenerateHtml</span><span class="p">(</span><span class="kt">string</span> <span class="n">source</span><span class="p">,</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">sections</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kt">int</span> <span class="n">depth</span><span class="p">;</span>
+			<span class="n">var</span> <span class="n">destination</span> <span class="p">=</span> <span class="n">GetDestination</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="k">out</span> <span class="n">depth</span><span class="p">);</span>
+			
+			<span class="kt">string</span> <span class="n">pathToRoot</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+			<span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">depth</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+				<span class="n">pathToRoot</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="s">&quot;..&quot;</span><span class="p">,</span> <span class="n">pathToRoot</span><span class="p">);</span>
+
+			<span class="n">var</span> <span class="n">htmlTemplate</span> <span class="p">=</span> <span class="n">Activator</span><span class="p">.</span><span class="n">CreateInstance</span><span class="p">(</span><span class="n">TemplateType</span><span class="p">)</span> <span class="k">as</span> <span class="n">TemplateBase</span><span class="p">;</span>
+
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">Title</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetFileName</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">PathToCss</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">pathToRoot</span><span class="p">,</span> <span class="s">&quot;nocco.css&quot;</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="sc">&#39;\\&#39;</span><span class="p">,</span> <span class="sc">&#39;/&#39;</span><span class="p">);</span>
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">GetSourcePath</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">pathToRoot</span><span class="p">,</span> <span class="n">Path</span><span class="p">.</span><span class="n">ChangeExtension</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">ToLower</span><span class="p">(),</span> <span class="s">&quot;.html&quot;</span><span class="p">).</span><span class="n">Substring</span><span class="p">(</span><span class="m">2</span><span class="p">)).</span><span class="n">Replace</span><span class="p">(</span><span class="sc">&#39;\\&#39;</span><span class="p">,</span> <span class="sc">&#39;/&#39;</span><span class="p">);</span>
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">Sections</span> <span class="p">=</span> <span class="n">sections</span><span class="p">;</span>
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">Sources</span> <span class="p">=</span> <span class="n">Files</span><span class="p">;</span>
+			
+			<span class="n">htmlTemplate</span><span class="p">.</span><span class="n">Execute</span><span class="p">();</span>
+
+			<span class="n">File</span><span class="p">.</span><span class="n">WriteAllText</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">htmlTemplate</span><span class="p">.</span><span class="n">Buffer</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_8">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_8">&#182;</a>
+							</div>
+							<h3>Helpers &amp; Setup</h3>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre></pre></div>
+						</td>
+					</tr>
+					<tr id="section_9">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_9">&#182;</a>
+							</div>
+							<p>Setup the Razor templating engine so that we can quickly pass the data in
+and generate HTML.</p>
+
+<p>The file <code>Resources\Nocco.cshtml</code> is read and compiled into a new dll
+with a type that extends the <code>TemplateBase</code> class. This new assembly is
+loaded so that we can create an instance and pass data into it
+and generate the HTML.</p>
+
+<p>TODO: use <a href="http://razorengine.codeplex.com/">RazorEngine</a> instead</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="n">Type</span> <span class="nf">SetupRazorTemplate</span><span class="p">()</span> <span class="p">{</span>
+			<span class="n">RazorEngineHost</span> <span class="n">host</span> <span class="p">=</span> <span class="k">new</span> <span class="n">RazorEngineHost</span><span class="p">(</span><span class="k">new</span> <span class="n">CSharpRazorCodeLanguage</span><span class="p">());</span>
+			<span class="n">host</span><span class="p">.</span><span class="n">DefaultBaseClass</span> <span class="p">=</span> <span class="k">typeof</span><span class="p">(</span><span class="n">TemplateBase</span><span class="p">).</span><span class="n">FullName</span><span class="p">;</span>
+			<span class="n">host</span><span class="p">.</span><span class="n">DefaultNamespace</span> <span class="p">=</span> <span class="s">&quot;RazorOutput&quot;</span><span class="p">;</span>
+			<span class="n">host</span><span class="p">.</span><span class="n">DefaultClassName</span> <span class="p">=</span> <span class="s">&quot;Template&quot;</span><span class="p">;</span>
+			<span class="n">host</span><span class="p">.</span><span class="n">NamespaceImports</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;System&quot;</span><span class="p">);</span>
+			<span class="n">RazorTemplateEngine</span> <span class="n">templateEngine</span> <span class="p">=</span> <span class="k">new</span> <span class="n">RazorTemplateEngine</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+
+			<span class="n">GeneratorResults</span> <span class="n">razorResult</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+			<span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">reader</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StreamReader</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">ExecutingDirectory</span><span class="p">,</span> <span class="s">&quot;Resources&quot;</span><span class="p">,</span> <span class="s">&quot;Nocco.cshtml&quot;</span><span class="p">)))</span> <span class="p">{</span>
+				<span class="n">razorResult</span> <span class="p">=</span> <span class="n">templateEngine</span><span class="p">.</span><span class="n">GenerateCode</span><span class="p">(</span><span class="n">reader</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="n">var</span> <span class="n">codeProvider</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">CSharp</span><span class="p">.</span><span class="n">CSharpCodeProvider</span><span class="p">();</span>
+
+			<span class="kt">string</span> <span class="n">outputAssemblyName</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;Template_{0}.dll&quot;</span><span class="p">,</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">(</span><span class="s">&quot;N&quot;</span><span class="p">)));</span>
+			<span class="n">CompilerResults</span> <span class="n">results</span> <span class="p">=</span> <span class="n">codeProvider</span><span class="p">.</span><span class="n">CompileAssemblyFromDom</span><span class="p">(</span>
+				<span class="k">new</span> <span class="nf">CompilerParameters</span><span class="p">(</span><span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span>
+					<span class="k">typeof</span><span class="p">(</span><span class="n">Nocco</span><span class="p">).</span><span class="n">Assembly</span><span class="p">.</span><span class="n">CodeBase</span><span class="p">.</span><span class="n">Replace</span><span class="p">(</span><span class="s">&quot;file:///&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;\\&quot;</span><span class="p">)</span>
+				<span class="p">},</span> <span class="n">outputAssemblyName</span><span class="p">),</span>
+				<span class="n">razorResult</span><span class="p">.</span><span class="n">GeneratedCode</span><span class="p">);</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_10">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_10">&#182;</a>
+							</div>
+							<p>Check for errors that may have occurred during template generation</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>			<span class="k">if</span> <span class="p">(</span><span class="n">results</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">HasErrors</span><span class="p">)</span> <span class="p">{</span>
+				<span class="n">var</span> <span class="n">err</span> <span class="p">=</span> <span class="n">results</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">OfType</span><span class="p">&lt;</span><span class="n">CompilerError</span><span class="p">&gt;().</span><span class="n">Where</span><span class="p">(</span><span class="n">ce</span> <span class="p">=&gt;</span> <span class="p">!</span><span class="n">ce</span><span class="p">.</span><span class="n">IsWarning</span><span class="p">).</span><span class="n">First</span><span class="p">();</span>
+				<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Error Compiling Template: ({0}, {1}) {2}&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">Line</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">Column</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">ErrorText</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="n">var</span> <span class="n">asm</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">Assembly</span><span class="p">.</span><span class="n">LoadFrom</span><span class="p">(</span><span class="n">outputAssemblyName</span><span class="p">);</span>
+
+			<span class="k">return</span> <span class="n">asm</span><span class="p">.</span><span class="n">GetType</span><span class="p">(</span><span class="s">&quot;RazorOutput.Template&quot;</span><span class="p">);</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_11">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_11">&#182;</a>
+							</div>
+							<p>A list of the languages that Nocco supports, mapping the file extension to
+the name of the Pygments lexer and the symbol that indicates a comment. To
+add another language to Nocco's repertoire, add it here.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Language</span><span class="p">&gt;</span> <span class="n">Languages</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Language</span><span class="p">&gt;</span> <span class="p">{</span>
+			<span class="p">{</span> <span class="s">&quot;.js&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="n">Language</span> <span class="p">{</span>
+				<span class="n">Name</span> <span class="p">=</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span>
+				<span class="n">Symbol</span> <span class="p">=</span> <span class="s">&quot;//&quot;</span>
+			<span class="p">}},</span>
+			<span class="p">{</span> <span class="s">&quot;.cs&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="n">Language</span> <span class="p">{</span>
+				<span class="n">Name</span> <span class="p">=</span> <span class="s">&quot;csharp&quot;</span><span class="p">,</span>
+				<span class="n">Symbol</span> <span class="p">=</span> <span class="s">&quot;//&quot;</span>
+			<span class="p">}},</span>
+			<span class="p">{</span> <span class="s">&quot;.vb&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="n">Language</span> <span class="p">{</span>
+				<span class="n">Name</span> <span class="p">=</span> <span class="s">&quot;vb.net&quot;</span><span class="p">,</span>
+				<span class="n">Symbol</span> <span class="p">=</span> <span class="s">&quot;&#39;&quot;</span>
+			<span class="p">}}</span>
+		<span class="p">};</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_12">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_12">&#182;</a>
+							</div>
+							<p>Get the current language we're documenting, based on the extension.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="n">Language</span> <span class="nf">GetLanguage</span><span class="p">(</span><span class="kt">string</span> <span class="n">source</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">var</span> <span class="n">extension</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetExtension</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+			<span class="k">return</span> <span class="n">Languages</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span> <span class="p">?</span> <span class="n">Languages</span><span class="p">[</span><span class="n">extension</span><span class="p">]</span> <span class="p">:</span> <span class="k">null</span><span class="p">;</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_13">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_13">&#182;</a>
+							</div>
+							<p>Compute the destination HTML path for an input source file path. If the source
+is <code>Example.cs</code>, the HTML will be at <code>docs/example.html</code></p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">GetDestination</span><span class="p">(</span><span class="kt">string</span> <span class="n">filepath</span><span class="p">,</span> <span class="k">out</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">var</span> <span class="n">dirs</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetDirectoryName</span><span class="p">(</span><span class="n">filepath</span><span class="p">).</span><span class="n">Substring</span><span class="p">(</span><span class="m">1</span><span class="p">).</span><span class="n">Split</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="n">Path</span><span class="p">.</span><span class="n">DirectorySeparatorChar</span> <span class="p">},</span> <span class="n">StringSplitOptions</span><span class="p">.</span><span class="n">RemoveEmptyEntries</span><span class="p">);</span>
+			<span class="n">depth</span> <span class="p">=</span> <span class="n">dirs</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span>
+
+			<span class="n">var</span> <span class="n">dest</span> <span class="p">=</span> <span class="s">&quot;docs&quot;</span><span class="p">;</span>
+			<span class="k">foreach</span><span class="p">(</span><span class="n">var</span> <span class="n">dir</span> <span class="k">in</span> <span class="n">dirs</span><span class="p">)</span>
+				<span class="n">dest</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span>
+
+			<span class="n">EnsureDirectory</span><span class="p">(</span><span class="n">dest</span><span class="p">);</span>
+
+			<span class="k">return</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetFileNameWithoutExtension</span><span class="p">(</span><span class="n">filepath</span><span class="p">).</span><span class="n">ToLower</span><span class="p">()</span> <span class="p">+</span> <span class="s">&quot;.html&quot;</span><span class="p">);</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_14">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_14">&#182;</a>
+							</div>
+							<p>Ensure that the destination directory exists.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">EnsureDirectory</span><span class="p">(</span><span class="kt">string</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(!</span><span class="n">Directory</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">dir</span><span class="p">))</span>
+				<span class="n">Directory</span><span class="p">.</span><span class="n">CreateDirectory</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+		<span class="p">}</span></pre></div>
+						</td>
+					</tr>
+					<tr id="section_15">
+						<td class="docs">
+							<div class="pilwrap">
+								<a class="pilcrow" href="#section_15">&#182;</a>
+							</div>
+							<p>Find all the files that match the pattern(s) passed in as arguments and
+generate documentation for each one.</p>
+
+						</td>
+						<td class="code">
+							<div class='highlight'><pre>		<span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">targets</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">targets</span><span class="p">.</span><span class="n">Length</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+				<span class="n">EnsureDirectory</span><span class="p">(</span><span class="s">&quot;docs&quot;</span><span class="p">);</span>
+
+				<span class="n">ExecutingDirectory</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetDirectoryName</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">Assembly</span><span class="p">.</span><span class="n">GetExecutingAssembly</span><span class="p">().</span><span class="n">Location</span><span class="p">);</span>
+				<span class="n">File</span><span class="p">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">ExecutingDirectory</span><span class="p">,</span> <span class="s">&quot;Resources&quot;</span><span class="p">,</span> <span class="s">&quot;Nocco.css&quot;</span><span class="p">),</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="s">&quot;docs&quot;</span><span class="p">,</span> <span class="s">&quot;nocco.css&quot;</span><span class="p">),</span> <span class="k">true</span><span class="p">);</span>
+
+				<span class="n">TemplateType</span> <span class="p">=</span> <span class="n">SetupRazorTemplate</span><span class="p">();</span>
+
+				<span class="n">Files</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
+				<span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">target</span> <span class="k">in</span> <span class="n">targets</span><span class="p">)</span>
+					<span class="n">Files</span><span class="p">.</span><span class="n">AddRange</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetFiles</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">).</span><span class="n">Where</span><span class="p">(</span><span class="n">filename</span> <span class="p">=&gt;</span> <span class="n">GetLanguage</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetFileName</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span> <span class="p">!=</span> <span class="k">null</span><span class="p">));</span>
+
+				<span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">file</span> <span class="k">in</span> <span class="n">Files</span><span class="p">)</span>
+					<span class="n">GenerateDocumentation</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+						</td>
+					</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>
