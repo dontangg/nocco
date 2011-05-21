@@ -1,11 +1,14 @@
-﻿// **Nocco** is a quick-and-dirty, hundred-line-long, literate-programming-style
-// documentation generator. It produces HTML that displays your comments
-// alongside your code. Comments are passed through
-// [Markdown](http://daringfireball.net/projects/markdown/syntax), and code is
-// passed through [Pygments](http://pygments.org/) syntax highlighting.
-// This page is the result of running Nocco against its own source file.
+﻿// **Nocco** is a quick-and-dirty, literate-programming-style documentation
+// generator. It is a C# port of [Docco](http://jashkenas.github.com/docco/),
+// which was written in Coffescript and runs on node.js.
 //
-// If you install Nocco, you can run it from the command-line:
+// Nocco produces HTML that displays your comments alongside your code.
+// Comments are passed through
+// [Markdown](http://daringfireball.net/projects/markdown/syntax), and code is
+// passed through [Pygments](http://pygments.org/) syntax highlighting. This
+// page is the result of running Nocco against its own source files.
+//
+// To use Nocco, run it from the command-line:
 //
 //     nocco *.cs
 //
@@ -14,13 +17,6 @@
 //
 // The [source for Nocco](http://github.com/dontangg/nocco) is available on GitHub,
 // and released under the MIT license.
-//
-// To install Docco, first make sure you have [Node.js](http://nodejs.org/),
-// [Pygments](http://pygments.org/) (install the latest dev version of Pygments
-// from [its Mercurial repo](http://dev.pocoo.org/hg/pygments-main)), and
-// [CoffeeScript](http://coffeescript.org/). Then, with NPM:
-//
-//     sudo npm install docco
 //
 // If **.NET** doesn't run on your platform, or you'd prefer a more convenient
 // package, get [Rocco](http://rtomayko.github.com/rocco/), the Ruby port that's
@@ -59,7 +55,7 @@ namespace Nocco {
 		}
 
 		// Given a string of source code, parse out each comment and the code that
-		// follows it, and create an individual [Section](Section.html) for it.
+		// follows it, and create an individual `Section` for it.
 		private static List<Section> Parse(string source, string[] lines) {
 			List<Section> sections = new List<Section>();
 			var language = GetLanguage(source);
@@ -95,7 +91,9 @@ namespace Nocco {
 		//
 		// We process the entire file in a single call to Pygments by inserting little
 		// marker comments between each section and then splitting the result string
-		// wherever our markers occur. (I think I'll probably switch to [prettify](http://code.google.com/p/google-code-prettify/)
+		// wherever our markers occur.
+		//
+		// TODO: Switch to [prettify](http://code.google.com/p/google-code-prettify/).
 		private static void Hightlight(string source, List<Section> sections) {
 			var language = GetLanguage(source);
 
@@ -157,6 +155,15 @@ namespace Nocco {
 
 		//### Helpers & Setup
 
+		// Setup the Razor templating engine so that we can quickly pass the data in
+		// and generate HTML.
+		//
+		// The file `Resources\Nocco.cshtml` is read and compiled into a new dll
+		// with a type that extends the `TemplateBase` class. This new assembly is
+		// loaded so that we can create an instance and pass data into it
+		// and generate the HTML.
+		//
+		// TODO: use [RazorEngine](http://razorengine.codeplex.com/) instead
 		private static Type SetupRazorTemplate() {
 			RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
 			host.DefaultBaseClass = typeof(TemplateBase).FullName;
@@ -179,7 +186,7 @@ namespace Nocco {
 				}, outputAssemblyName),
 				razorResult.GeneratedCode);
 
-			// TODO: Error checking is for wooses
+			// Check for errors that may have occurred during template generation
 			if (results.Errors.HasErrors) {
 				var err = results.Errors.OfType<CompilerError>().Where(ce => !ce.IsWarning).First();
 				Console.WriteLine("Error Compiling Template: ({0}, {1}) {2}", err.Line, err.Column, err.ErrorText);
@@ -235,6 +242,8 @@ namespace Nocco {
 				Directory.CreateDirectory(dir);
 		}
 
+		// Find all the files that match the pattern(s) passed in as arguments and
+		// generate documentation for each one.
 		public static void Generate(string[] targets) {
 			if (targets.Length > 0) {
 				EnsureDirectory("docs");

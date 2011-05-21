@@ -1,4 +1,5 @@
-﻿using System;
+﻿// A class to be used as the base class for the generated template.
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Text;
 namespace Nocco {
 	public abstract class TemplateBase {
 
+		// Properties available from within the template
 		public string Title { get; set; }
 		public string PathToCss { get; set; }
 		public Func<string, string> GetSourcePath { get; set; }
@@ -18,6 +20,8 @@ namespace Nocco {
 			Buffer = new StringBuilder();
 		}
 
+		// This `Execute` function will be defined in the inheriting template
+		// class. It generates the HTML by calling `Write` and `WriteLiteral`.
 		public abstract void Execute();
 
 		public virtual void Write(object value) {

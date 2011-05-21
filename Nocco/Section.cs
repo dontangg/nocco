@@ -1,4 +1,5 @@
-﻿using System;
+﻿// A simple class to contain documentation and its corresponding code.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
