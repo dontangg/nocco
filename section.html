@@ -5,8 +5,9 @@
 	<title>Section.cs</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<link href="nocco.css" rel="stylesheet" media="all" type="text/css" />
+	<script src="prettify.js" type="text/javascript"></script>
 </head>
-<body>
+<body onload="prettyPrint()">
 	<div id="container">
 		<div id="background"></div>
 			<div id="jump_to">
@@ -53,20 +54,19 @@
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+							<pre><code class='prettyprint'>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-<span class="k">namespace</span> <span class="nn">Nocco</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">class</span> <span class="nc">Section</span> <span class="p">{</span>
-		<span class="k">public</span> <span class="kt">string</span> <span class="n">CodeHtml</span><span class="p">;</span>
-		<span class="k">public</span> <span class="kt">string</span> <span class="n">DocsHtml</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-</pre></div>
+namespace Nocco
+{
+	public class Section {
+		public string CodeHtml;
+		public string DocsHtml;
+	}
+}
+</code></pre>
 						</td>
 					</tr>
 			</tbody>

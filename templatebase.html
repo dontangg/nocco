@@ -5,8 +5,9 @@
 	<title>TemplateBase.cs</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<link href="nocco.css" rel="stylesheet" media="all" type="text/css" />
+	<script src="prettify.js" type="text/javascript"></script>
 </head>
-<body>
+<body onload="prettyPrint()">
 	<div id="container">
 		<div id="background"></div>
 			<div id="jump_to">
@@ -53,13 +54,15 @@
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.IO</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+							<pre><code class='prettyprint'>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
-<span class="k">namespace</span> <span class="nn">Nocco</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">TemplateBase</span> <span class="p">{</span></pre></div>
+namespace Nocco {
+	public abstract class TemplateBase {
+
+</code></pre>
 						</td>
 					</tr>
 					<tr id="section_2">
@@ -71,17 +74,19 @@
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre>		<span class="k">public</span> <span class="kt">string</span> <span class="n">Title</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-		<span class="k">public</span> <span class="kt">string</span> <span class="n">PathToCss</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-		<span class="k">public</span> <span class="n">Func</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">GetSourcePath</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-		<span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Section</span><span class="p">&gt;</span> <span class="n">Sections</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-		<span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">Sources</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+							<pre><code class='prettyprint'>		public string Title { get; set; }
+		public string PathToCss { get; set; }
+		public Func&lt;string, string&gt; GetSourcePath { get; set; }
+		public List&lt;Section&gt; Sections { get; set; }
+		public List&lt;string&gt; Sources { get; set; }
 
-		<span class="k">public</span> <span class="n">StringBuilder</span> <span class="n">Buffer</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+		public StringBuilder Buffer { get; set; }
 
-		<span class="k">public</span> <span class="nf">TemplateBase</span><span class="p">()</span> <span class="p">{</span>
-			<span class="n">Buffer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
-		<span class="p">}</span></pre></div>
+		public TemplateBase() {
+			Buffer = new StringBuilder();
+		}
+
+</code></pre>
 						</td>
 					</tr>
 					<tr id="section_3">
@@ -94,19 +99,18 @@ class. It generates the HTML by calling <code>Write</code> and <code>WriteLitera
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre>		<span class="k">public</span> <span class="k">abstract</span> <span class="k">void</span> <span class="nf">Execute</span><span class="p">();</span>
+							<pre><code class='prettyprint'>		public abstract void Execute();
 
-		<span class="k">public</span> <span class="k">virtual</span> <span class="k">void</span> <span class="nf">Write</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">WriteLiteral</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
-		<span class="p">}</span>
+		public virtual void Write(object value) {
+			WriteLiteral(value);
+		}
 
-		<span class="k">public</span> <span class="k">virtual</span> <span class="k">void</span> <span class="nf">WriteLiteral</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">Buffer</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-</pre></div>
+		public virtual void WriteLiteral(object value) {
+			Buffer.Append(value);
+		}
+	}
+}
+</code></pre>
 						</td>
 					</tr>
 			</tbody>

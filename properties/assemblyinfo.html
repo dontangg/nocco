@@ -5,8 +5,9 @@
 	<title>AssemblyInfo.cs</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<link href="../nocco.css" rel="stylesheet" media="all" type="text/css" />
+	<script src="prettify.js" type="text/javascript"></script>
 </head>
-<body>
+<body onload="prettyPrint()">
 	<div id="container">
 		<div id="background"></div>
 			<div id="jump_to">
@@ -16,7 +17,7 @@
 							<a class="source" href="../language.html">
 								Language.cs
 							</a>
-							<a class="source" href="../index.html">
+							<a class="source" href="../nocco.html">
 								Nocco.cs
 							</a>
 							<a class="source" href="../program.html">
@@ -52,9 +53,11 @@
 							
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="k">using</span> <span class="nn">System.Reflection</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Runtime.CompilerServices</span><span class="p">;</span>
-<span class="k">using</span> <span class="nn">System.Runtime.InteropServices</span><span class="p">;</span></pre></div>
+							<pre><code class='prettyprint'>using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+</code></pre>
 						</td>
 					</tr>
 					<tr id="section_2">
@@ -67,15 +70,17 @@ set of attributes.</p>
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="na">[assembly: AssemblyTitle(&quot;Nocco&quot;)]</span>
-<span class="na">[assembly: AssemblyDescription(&quot;A quick-and-dirty, literate-programming-style documentation generator.&quot;)]</span>
-<span class="na">[assembly: AssemblyConfiguration(&quot;&quot;)]</span>
-<span class="na">[assembly: AssemblyCompany(&quot;&quot;)]</span>
-<span class="na">[assembly: AssemblyProduct(&quot;Nocco&quot;)]</span>
-<span class="na">[assembly: AssemblyCopyright(&quot;MIT Expat License&quot;)]</span>
-<span class="na">[assembly: AssemblyTrademark(&quot;&quot;)]</span>
-<span class="na">[assembly: AssemblyCulture(&quot;&quot;)]</span>
-<span class="na">[assembly: ComVisible(false)]</span></pre></div>
+							<pre><code class='prettyprint'>[assembly: AssemblyTitle(&quot;Nocco&quot;)]
+[assembly: AssemblyDescription(&quot;A quick-and-dirty, literate-programming-style documentation generator.&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;Nocco&quot;)]
+[assembly: AssemblyCopyright(&quot;MIT Expat License&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+[assembly: ComVisible(false)]
+
+</code></pre>
 						</td>
 					</tr>
 					<tr id="section_3">
@@ -87,7 +92,9 @@ set of attributes.</p>
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="na">[assembly: Guid(&quot;0A4BE032-CE27-47BD-85BE-F2696CA10E14&quot;)]</span></pre></div>
+							<pre><code class='prettyprint'>[assembly: Guid(&quot;0A4BE032-CE27-47BD-85BE-F2696CA10E14&quot;)]
+
+</code></pre>
 						</td>
 					</tr>
 					<tr id="section_4">
@@ -106,10 +113,10 @@ set of attributes.</p>
 
 						</td>
 						<td class="code">
-							<div class='highlight'><pre><span class="na">[assembly: AssemblyVersion(&quot;0.1.0.0&quot;)]</span>
-<span class="na">[assembly: AssemblyFileVersion(&quot;0.1.0.0&quot;)]</span>
-
-</pre></div>
+							<pre><code class='prettyprint'>
+[assembly: AssemblyVersion(&quot;0.1.0.0&quot;)]
+[assembly: AssemblyFileVersion(&quot;0.1.0.0&quot;)]
+</code></pre>
 						</td>
 					</tr>
 			</tbody>
