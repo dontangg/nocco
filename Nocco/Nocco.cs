@@ -1,12 +1,14 @@
 ﻿// **Nocco** is a quick-and-dirty, literate-programming-style documentation
 // generator. It is a C# port of [Docco](http://jashkenas.github.com/docco/),
-// which was written in Coffescript and runs on node.js.
+// which was written by [Jeremy Ashkenas](https://github.com/jashkenas) in
+// Coffescript and runs on node.js.
 //
 // Nocco produces HTML that displays your comments alongside your code.
 // Comments are passed through
 // [Markdown](http://daringfireball.net/projects/markdown/syntax), and code is
-// passed through [Pygments](http://pygments.org/) syntax highlighting. This
-// page is the result of running Nocco against its own source files.
+// highlighted using [google-code-prettify](http://code.google.com/p/google-code-prettify/)
+// syntax highlighting. This page is the result of running Nocco against its
+// own source files.
 //
 // To use Nocco, run it from the command-line:
 //
@@ -85,47 +87,16 @@ namespace Nocco {
 			return sections;
 		}
 
-		// Highlights a single chunk of code, using a web service for **Pygments**,
-		// and runs the text of its corresponding comment through **Markdown**, using a
-		// C# implementation called [MarkdownSharp](http://code.google.com/p/markdownsharp/).
-		//
-		// We process the entire file in a single call to Pygments by inserting little
-		// marker comments between each section and then splitting the result string
-		// wherever our markers occur.
-		//
-		// TODO: Switch to [prettify](http://code.google.com/p/google-code-prettify/).
+		// Prepares a single chunk of code for HTML output and runs the text of its
+		// corresponding comment through **Markdown**, using a C# implementation
+		// called [MarkdownSharp](http://code.google.com/p/markdownsharp/).
 		private static void Hightlight(string source, List<Section> sections) {
-			var language = GetLanguage(source);
-
-			var request = (HttpWebRequest)WebRequest.Create("http://pygments.appspot.com/");
-			request.Method = "POST";
-			request.ContentType = "application/x-www-form-urlencoded";
-
-			var allCodeText = string.Join(language.DividerText, sections.Select(s => s.CodeHtml));
-			string postData = string.Format("lang={0}&code={1}", language.Name, System.Web.HttpUtility.UrlEncode(allCodeText));
-			byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-			request.ContentLength = byteArray.Length;
-			using (var stream = request.GetRequestStream()) {
-				stream.Write(byteArray, 0, byteArray.Length);
-			}
-
-			var response = (HttpWebResponse)request.GetResponse();
-			if (response.StatusCode == HttpStatusCode.OK) {
-				using (var stream = response.GetResponseStream()) {
-					var reader = new StreamReader(stream);
-					allCodeText = reader.ReadToEnd();
-				}
-			}
-
-			allCodeText = allCodeText.Replace("<div class=\"highlight\"><pre>", "").Replace("</pre></div>", "");
-			var fragments = language.DividerHTML.Split(allCodeText);
-
 			var markdown = new MarkdownSharp.Markdown();
 
 			for (var i=0; i<sections.Count; i++) {
 				var section = sections[i];
 				section.DocsHtml = markdown.Transform(section.DocsHtml);
-				section.CodeHtml = string.Format("<div class='highlight'><pre>{0}</pre></div>", fragments[i]);
+				section.CodeHtml = System.Web.HttpUtility.HtmlEncode(section.CodeHtml);
 			}
 		}
 
@@ -198,8 +169,8 @@ namespace Nocco {
 		}
 
 		// A list of the languages that Nocco supports, mapping the file extension to
-		// the name of the Pygments lexer and the symbol that indicates a comment. To
-		// add another language to Nocco's repertoire, add it here.
+		// the symbol that indicates a comment. To add another language to Nocco's
+		// repertoire, add it here.
 		private static Dictionary<string, Language> Languages = new Dictionary<string, Language> {
 			{ ".js", new Language {
 				Name = "javascript",
@@ -250,6 +221,7 @@ namespace Nocco {
 
 				ExecutingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
+				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
 
 				TemplateType = SetupRazorTemplate();
 
