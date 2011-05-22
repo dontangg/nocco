@@ -133,39 +133,36 @@ namespace Nocco {
 		// with a type that extends the `TemplateBase` class. This new assembly is
 		// loaded so that we can create an instance and pass data into it
 		// and generate the HTML.
-		//
-		// TODO: use [RazorEngine](http://razorengine.codeplex.com/) instead
 		private static Type SetupRazorTemplate() {
 			RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
 			host.DefaultBaseClass = typeof(TemplateBase).FullName;
 			host.DefaultNamespace = "RazorOutput";
 			host.DefaultClassName = "Template";
 			host.NamespaceImports.Add("System");
-			RazorTemplateEngine templateEngine = new RazorTemplateEngine(host);
 
 			GeneratorResults razorResult = null;
 			using (var reader = new StreamReader(Path.Combine(ExecutingDirectory, "Resources", "Nocco.cshtml"))) {
-				razorResult = templateEngine.GenerateCode(reader);
+				razorResult = new RazorTemplateEngine(host).GenerateCode(reader);
 			}
 
-			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
+			var compilerParams = new CompilerParameters {
+				GenerateInMemory = true,
+				GenerateExecutable = false,
+				IncludeDebugInformation = false,
+				CompilerOptions = "/target:library /optimize"
+			};
+			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
 
-			string outputAssemblyName = Path.Combine(Path.GetTempPath(), String.Format("Template_{0}.dll", Guid.NewGuid().ToString("N")));
-			CompilerResults results = codeProvider.CompileAssemblyFromDom(
-				new CompilerParameters(new string[] {
-					typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\")
-				}, outputAssemblyName),
-				razorResult.GeneratedCode);
+			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
+			CompilerResults results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
 
 			// Check for errors that may have occurred during template generation
 			if (results.Errors.HasErrors) {
-				var err = results.Errors.OfType<CompilerError>().Where(ce => !ce.IsWarning).First();
-				Console.WriteLine("Error Compiling Template: ({0}, {1}) {2}", err.Line, err.Column, err.ErrorText);
+				foreach (var err in results.Errors.OfType<CompilerError>().Where(ce => !ce.IsWarning))
+					Console.WriteLine("Error Compiling Template: ({0}, {1}) {2}", err.Line, err.Column, err.ErrorText);
 			}
 
-			var asm = System.Reflection.Assembly.LoadFrom(outputAssemblyName);
-
-			return asm.GetType("RazorOutput.Template");
+			return results.CompiledAssembly.GetType("RazorOutput.Template");
 		}
 
 		// A list of the languages that Nocco supports, mapping the file extension to
@@ -231,7 +228,6 @@ namespace Nocco {
 
 				foreach (var file in Files)
 					GenerateDocumentation(file);
-
 			}
 		}
 	}
