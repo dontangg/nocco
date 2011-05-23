@@ -195,26 +195,17 @@ namespace Nocco {
 			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 			depth = dirs.Length;
 
-			var dest = "docs";
-			foreach(var dir in dirs)
-				dest = Path.Combine(dest, dir);
+			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
+			Directory.CreateDirectory(dest);
 
-			EnsureDirectory(dest);
-
-			return Path.Combine(dest, Path.GetFileNameWithoutExtension(filepath).ToLower() + ".html");
-		}
-
-		// Ensure that the destination directory exists.
-		private static void EnsureDirectory(string dir) {
-			if (!Directory.Exists(dir))
-				Directory.CreateDirectory(dir);
+			return Path.Combine(dest, Path.ChangeExtension(filepath, "html").ToLower());
 		}
 
 		// Find all the files that match the pattern(s) passed in as arguments and
 		// generate documentation for each one.
 		public static void Generate(string[] targets) {
 			if (targets.Length > 0) {
-				EnsureDirectory("docs");
+				Directory.CreateDirectory("docs");
 
 				ExecutingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
