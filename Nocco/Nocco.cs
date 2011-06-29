@@ -10,6 +10,11 @@
 // syntax highlighting. This page is the result of running Nocco against its
 // own source files.
 //
+// Currently, to build Nocco, you'll have to have Visual Studio 2010. The project
+// depends on [MarkdownSharp](http://code.google.com/p/markdownsharp/) and you'll
+// have to install [.NET MVC 3](http://www.asp.net/mvc/mvc3) to get the
+// System.Web.Razor assembly.
+//
 // To use Nocco, run it from the command-line:
 //
 //     nocco *.cs
