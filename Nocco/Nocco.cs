@@ -203,7 +203,7 @@ namespace Nocco {
 			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
 			Directory.CreateDirectory(dest);
 
-			return Path.Combine(dest, Path.ChangeExtension(filepath, "html").ToLower());
+			return Path.Combine("docs", Path.ChangeExtension(filepath, "html").ToLower());
 		}
 
 		// Find all the files that match the pattern(s) passed in as arguments and
