@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EmbeddedResources.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Nocco.cs" />
     <Compile Include="Program.cs" />
@@ -51,19 +52,19 @@
     <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\prettify.js">
+    <EmbeddedResource Include="Resources\prettify.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <Content Include="Resources\Nocco.cshtml">
+    <EmbeddedResource Include="Resources\Nocco.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Nocco.css">
+    <EmbeddedResource Include="Resources\Nocco.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
