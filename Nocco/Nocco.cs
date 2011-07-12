@@ -45,9 +45,8 @@ using System.Web.Razor;
 
 namespace Nocco {
 	class Nocco {
-		private static string ExecutingDirectory;
 		private static List<string> Files;
-		private static Type TemplateType;
+		private static EmbeddedResources EmbeddedResources = new EmbeddedResources();
 
 		//### Main Documentation Generation Functions
 
@@ -116,10 +115,10 @@ namespace Nocco {
 			for (var i = 0; i < depth; i++)
 				pathToRoot = Path.Combine("..", pathToRoot);
 
-			var htmlTemplate = Activator.CreateInstance(TemplateType) as TemplateBase;
+            var htmlTemplate = EmbeddedResources.CreateRazorTemplateInstance();
 
 			htmlTemplate.Title = Path.GetFileName(source);
-			htmlTemplate.PathToCss = Path.Combine(pathToRoot, "nocco.css").Replace('\\', '/');
+            htmlTemplate.GetResourcePath = (string s) => Path.Combine(pathToRoot, s).Replace('\\', '/');
 			htmlTemplate.GetSourcePath = (string s) => Path.Combine(pathToRoot, Path.ChangeExtension(s.ToLower(), ".html").Substring(2)).Replace('\\', '/');
 			htmlTemplate.Sections = sections;
 			htmlTemplate.Sources = Files;
@@ -127,47 +126,6 @@ namespace Nocco {
 			htmlTemplate.Execute();
 
 			File.WriteAllText(destination, htmlTemplate.Buffer.ToString());
-		}
-
-		//### Helpers & Setup
-
-		// Setup the Razor templating engine so that we can quickly pass the data in
-		// and generate HTML.
-		//
-		// The file `Resources\Nocco.cshtml` is read and compiled into a new dll
-		// with a type that extends the `TemplateBase` class. This new assembly is
-		// loaded so that we can create an instance and pass data into it
-		// and generate the HTML.
-		private static Type SetupRazorTemplate() {
-			RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
-			host.DefaultBaseClass = typeof(TemplateBase).FullName;
-			host.DefaultNamespace = "RazorOutput";
-			host.DefaultClassName = "Template";
-			host.NamespaceImports.Add("System");
-
-			GeneratorResults razorResult = null;
-			using (var reader = new StreamReader(Path.Combine(ExecutingDirectory, "Resources", "Nocco.cshtml"))) {
-				razorResult = new RazorTemplateEngine(host).GenerateCode(reader);
-			}
-
-			var compilerParams = new CompilerParameters {
-				GenerateInMemory = true,
-				GenerateExecutable = false,
-				IncludeDebugInformation = false,
-				CompilerOptions = "/target:library /optimize"
-			};
-			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
-
-			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-			CompilerResults results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
-
-			// Check for errors that may have occurred during template generation
-			if (results.Errors.HasErrors) {
-				foreach (var err in results.Errors.OfType<CompilerError>().Where(ce => !ce.IsWarning))
-					Console.WriteLine("Error Compiling Template: ({0}, {1}) {2}", err.Line, err.Column, err.ErrorText);
-			}
-
-			return results.CompiledAssembly.GetType("RazorOutput.Template");
 		}
 
 		// A list of the languages that Nocco supports, mapping the file extension to
@@ -212,11 +170,7 @@ namespace Nocco {
 			if (targets.Length > 0) {
 				Directory.CreateDirectory("docs");
 
-				ExecutingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
-				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
-
-				TemplateType = SetupRazorTemplate();
+				EmbeddedResources.WriteClientFilesTo("docs");
 
 				Files = new List<string>();
 				foreach (var target in targets)
