@@ -72,11 +72,18 @@ namespace Nocco {
 			var codeText = new StringBuilder();
 
 			Action<string, string> save = (string docs, string code) => sections.Add(new Section() { DocsHtml = docs, CodeHtml = code });
+			Func<string, string> mapToMarkdown = (string docs) => {
+				if (language.MarkdownMaps != null) {
+					foreach (var map in language.MarkdownMaps)
+						docs = System.Text.RegularExpressions.Regex.Replace(docs, map.Key, map.Value, System.Text.RegularExpressions.RegexOptions.Multiline);
+				}
+				return docs;
+			};
 
 			foreach (var line in lines) {
 				if (language.CommentMatcher.IsMatch(line) && !language.CommentFilter.IsMatch(line)) {
 					if (hasCode) {
-						save(docsText.ToString(), codeText.ToString());
+						save(mapToMarkdown(docsText.ToString()), codeText.ToString());
 						hasCode = false;
 						docsText = new StringBuilder();
 						codeText = new StringBuilder();
@@ -88,7 +95,7 @@ namespace Nocco {
 					codeText.AppendLine(line);
 				}
 			}
-			save(docsText.ToString(), codeText.ToString());
+			save(mapToMarkdown(docsText.ToString()), codeText.ToString());
 
 			return sections;
 		}
@@ -173,6 +180,10 @@ namespace Nocco {
 		// A list of the languages that Nocco supports, mapping the file extension to
 		// the symbol that indicates a comment. To add another language to Nocco's
 		// repertoire, add it here.
+		//
+		// You can also specify a list of regular expression patterns and replacements. This
+		// translates things like
+		// [XML documentation comments](http://msdn.microsoft.com/en-us/library/b2s063f7.aspx) into Markdown.
 		private static Dictionary<string, Language> Languages = new Dictionary<string, Language> {
 			{ ".js", new Language {
 				Name = "javascript",
@@ -180,11 +191,25 @@ namespace Nocco {
 			}},
 			{ ".cs", new Language {
 				Name = "csharp",
-				Symbol = "//"
+				Symbol = "///?",
+				MarkdownMaps = new Dictionary<string, string> {
+					{ @"<c>([^<]*)</c>", "`$1`" },
+					{ @"<param[^\>]*>([^<]*)</param>", "" },
+					{ @"<returns>([^<]*)</returns>", "" },
+					{ @"<see\s*cref=""([^""]*)""\s*/>", "see `$1`"},
+					{ @"(</?example>|</?summary>|</?remarks>)", "" },
+				}
 			}},
 			{ ".vb", new Language {
 				Name = "vb.net",
-				Symbol = "'"
+				Symbol = "'+",
+				MarkdownMaps = new Dictionary<string, string> {
+					{ @"<c>([^<]*)</c>", "`$1`" },
+					{ @"<param[^\>]*>([^<]*)</param>", "" },
+					{ @"<returns>([^<]*)</returns>", "" },
+					{ @"<see\s*cref=""([^""]*)""\s*/>", "see `$1`"},
+					{ @"(</?example>|</?summary>|</?remarks>)", "" },
+				}
 			}}
 		};
 
