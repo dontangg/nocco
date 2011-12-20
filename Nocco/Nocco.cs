@@ -64,13 +64,6 @@ namespace Nocco {
 
 		// Given a string of source code, parse out each comment and the code that
 		// follows it, and create an individual `Section` for it.
-		/// <summary>
-		/// This is a sweet function.  You can pass it a <c>string</c> and an <c>int</c>.
-		/// For more info, <see cref="MyFancyClass.MyRegalMethod(string)"/>.
-		/// </summary>
-		/// <param name="str">A string parameter</param>
-		/// <param name="i">An integer</param>
-		/// <returns>A really cool object</returns>
 		private static List<Section> Parse(string source, string[] lines) {
 			List<Section> sections = new List<Section>();
 			var language = GetLanguage(source);
