@@ -113,9 +113,7 @@ namespace Nocco {
 			int depth;
 			var destination = GetDestination(source, out depth);
 			
-			string pathToRoot = "";
-			for (var i = 0; i < depth; i++)
-				pathToRoot = Path.Combine("..", pathToRoot);
+			string pathToRoot = string.Concat(Enumerable.Repeat(".." + Path.DirectorySeparatorChar, depth));
 
 			var htmlTemplate = Activator.CreateInstance(TemplateType) as TemplateBase;
 
