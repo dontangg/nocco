@@ -49,6 +49,12 @@ namespace Nocco {
 		private static string ExecutingDirectory;
 		private static List<string> Files;
 		private static Type TemplateType;
+		private static PathHelper RootPathHelper;
+
+		static Nocco()
+		{
+			RootPathHelper = new PathHelper(System.Environment.CurrentDirectory + '\\');
+		}
 
 		//### Main Documentation Generation Functions
 
@@ -110,12 +116,11 @@ namespace Nocco {
 		// and write out the documentation. Pass the completed sections into the template
 		// found in `Resources/Nocco.cshtml`
 		private static void GenerateHtml(string source, List<Section> sections) {
-			int depth;
-			var destination = GetDestination(source, out depth);
-			
-			string pathToRoot = "";
-			for (var i = 0; i < depth; i++)
-				pathToRoot = Path.Combine("..", pathToRoot);
+			var relativeDestination = RootPathHelper.MakeRelativePath(Path.GetFullPath(source));
+			var writeDestination = Path.Combine("docs", relativeDestination);
+
+			Directory.CreateDirectory(Path.GetDirectoryName(writeDestination).ToLower());
+			string pathToRoot = String.Concat(Enumerable.Repeat<string>("../", relativeDestination.Split(Path.DirectorySeparatorChar).Length - 1));
 
 			var htmlTemplate = Activator.CreateInstance(TemplateType) as TemplateBase;
 
@@ -128,7 +133,7 @@ namespace Nocco {
 			
 			htmlTemplate.Execute();
 
-			File.WriteAllText(destination, htmlTemplate.Buffer.ToString());
+			File.WriteAllText(Path.ChangeExtension(writeDestination.ToLower(), ".html"), htmlTemplate.Buffer.ToString());
 		}
 
 		//### Helpers & Setup
@@ -194,18 +199,6 @@ namespace Nocco {
 		private static Language GetLanguage(string source) {
 			var extension = Path.GetExtension(source);
 			return Languages.ContainsKey(extension) ? Languages[extension] : null;
-		}
-
-		// Compute the destination HTML path for an input source file path. If the source
-		// is `Example.cs`, the HTML will be at `docs/example.html`
-		private static string GetDestination(string filepath, out int depth) {
-			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
-			depth = dirs.Length;
-
-			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
-			Directory.CreateDirectory(dest);
-
-			return Path.Combine("docs", Path.ChangeExtension(filepath, "html").ToLower());
 		}
 
 		// Find all the files that match the pattern(s) passed in as arguments and
