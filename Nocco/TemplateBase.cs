@@ -1,7 +1,6 @@
 ﻿// A class to be used as the base class for the generated template.
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Nocco {
@@ -17,7 +16,7 @@ namespace Nocco {
 
 		public StringBuilder Buffer { get; set; }
 
-		public TemplateBase() {
+		protected TemplateBase() {
 			Buffer = new StringBuilder();
 		}
 
