@@ -40,15 +40,14 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Web.Razor;
 
 namespace Nocco {
 	class Nocco {
-		private static string ExecutingDirectory;
-		private static List<string> Files;
-		private static Type TemplateType;
+		private static string _executingDirectory;
+		private static List<string> _files;
+		private static Type _templateType;
 
 		//### Main Documentation Generation Functions
 
@@ -58,7 +57,7 @@ namespace Nocco {
 		private static void GenerateDocumentation(string source) {
 			var lines = File.ReadAllLines(source);
 			var sections = Parse(source, lines);
-			Hightlight(source, sections);
+			Hightlight(sections);
 			GenerateHtml(source, sections);
 		}
 
@@ -71,8 +70,8 @@ namespace Nocco {
 			var docsText = new StringBuilder();
 			var codeText = new StringBuilder();
 
-			Action<string, string> save = (string docs, string code) => sections.Add(new Section() { DocsHtml = docs, CodeHtml = code });
-			Func<string, string> mapToMarkdown = (string docs) => {
+			Action<string, string> save = (docs, code) => sections.Add(new Section { DocsHtml = docs, CodeHtml = code });
+			Func<string, string> mapToMarkdown = docs => {
 				if (language.MarkdownMaps != null) {
 					foreach (var map in language.MarkdownMaps)
 						docs = System.Text.RegularExpressions.Regex.Replace(docs, map.Key, map.Value, System.Text.RegularExpressions.RegexOptions.Multiline);
@@ -103,11 +102,10 @@ namespace Nocco {
 		// Prepares a single chunk of code for HTML output and runs the text of its
 		// corresponding comment through **Markdown**, using a C# implementation
 		// called [MarkdownSharp](http://code.google.com/p/markdownsharp/).
-		private static void Hightlight(string source, List<Section> sections) {
+		private static void Hightlight(List<Section> sections) {
 			var markdown = new MarkdownSharp.Markdown();
 
-			for (var i=0; i<sections.Count; i++) {
-				var section = sections[i];
+			foreach (var section in sections) {
 				section.DocsHtml = markdown.Transform(section.DocsHtml);
 				section.CodeHtml = System.Web.HttpUtility.HtmlEncode(section.CodeHtml);
 			}
@@ -122,14 +120,14 @@ namespace Nocco {
 			
 			string pathToRoot = string.Concat(Enumerable.Repeat(".." + Path.DirectorySeparatorChar, depth));
 
-			var htmlTemplate = Activator.CreateInstance(TemplateType) as TemplateBase;
+			var htmlTemplate = Activator.CreateInstance(_templateType) as TemplateBase;
 
 			htmlTemplate.Title = Path.GetFileName(source);
 			htmlTemplate.PathToCss = Path.Combine(pathToRoot, "nocco.css").Replace('\\', '/');
 		    htmlTemplate.PathToJs = Path.Combine(pathToRoot, "prettify.js").Replace('\\', '/');
-			htmlTemplate.GetSourcePath = (string s) => Path.Combine(pathToRoot, Path.ChangeExtension(s.ToLower(), ".html").Substring(2)).Replace('\\', '/');
+			htmlTemplate.GetSourcePath = s => Path.Combine(pathToRoot, Path.ChangeExtension(s.ToLower(), ".html").Substring(2)).Replace('\\', '/');
 			htmlTemplate.Sections = sections;
-			htmlTemplate.Sources = Files;
+			htmlTemplate.Sources = _files;
 			
 			htmlTemplate.Execute();
 
@@ -146,14 +144,14 @@ namespace Nocco {
 		// loaded so that we can create an instance and pass data into it
 		// and generate the HTML.
 		private static Type SetupRazorTemplate() {
-			RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
+			var host = new RazorEngineHost(new CSharpRazorCodeLanguage());
 			host.DefaultBaseClass = typeof(TemplateBase).FullName;
 			host.DefaultNamespace = "RazorOutput";
 			host.DefaultClassName = "Template";
 			host.NamespaceImports.Add("System");
 
 			GeneratorResults razorResult = null;
-			using (var reader = new StreamReader(Path.Combine(ExecutingDirectory, "Resources", "Nocco.cshtml"))) {
+			using (var reader = new StreamReader(Path.Combine(_executingDirectory, "Resources", "Nocco.cshtml"))) {
 				razorResult = new RazorTemplateEngine(host).GenerateCode(reader);
 			}
 
@@ -222,7 +220,7 @@ namespace Nocco {
 		// Compute the destination HTML path for an input source file path. If the source
 		// is `Example.cs`, the HTML will be at `docs/example.html`
 		private static string GetDestination(string filepath, out int depth) {
-			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 			depth = dirs.Length;
 
 			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
@@ -237,17 +235,17 @@ namespace Nocco {
 			if (targets.Length > 0) {
 				Directory.CreateDirectory("docs");
 
-				ExecutingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
-				File.Copy(Path.Combine(ExecutingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
+				_executingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				File.Copy(Path.Combine(_executingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
+				File.Copy(Path.Combine(_executingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
 
-				TemplateType = SetupRazorTemplate();
+				_templateType = SetupRazorTemplate();
 
-				Files = new List<string>();
+				_files = new List<string>();
 				foreach (var target in targets)
-					Files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => GetLanguage(Path.GetFileName(filename)) != null));
+					_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => GetLanguage(Path.GetFileName(filename)) != null));
 
-				foreach (var file in Files)
+				foreach (var file in _files)
 					GenerateDocumentation(file);
 			}
 		}
