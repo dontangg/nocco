@@ -41,6 +41,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Razor;
 
 namespace Nocco {
@@ -72,10 +73,8 @@ namespace Nocco {
 
 			Action<string, string> save = (docs, code) => sections.Add(new Section { DocsHtml = docs, CodeHtml = code });
 			Func<string, string> mapToMarkdown = docs => {
-				if (language.MarkdownMaps != null) {
-					foreach (var map in language.MarkdownMaps)
-						docs = System.Text.RegularExpressions.Regex.Replace(docs, map.Key, map.Value, System.Text.RegularExpressions.RegexOptions.Multiline);
-				}
+				if (language.MarkdownMaps != null)
+					docs = language.MarkdownMaps.Aggregate(docs, (currentDocs, map) => Regex.Replace(currentDocs, map.Key, map.Value, RegexOptions.Multiline));
 				return docs;
 			};
 
