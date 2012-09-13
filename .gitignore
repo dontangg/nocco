@@ -4,3 +4,4 @@ obj
 *.suo
 packages
 docs
+_ReSharper*
