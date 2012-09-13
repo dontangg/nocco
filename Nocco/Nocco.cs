@@ -64,7 +64,7 @@ namespace Nocco {
 		// Given a string of source code, parse out each comment and the code that
 		// follows it, and create an individual `Section` for it.
 		private static List<Section> Parse(string source, string[] lines) {
-			List<Section> sections = new List<Section>();
+			var sections = new List<Section>();
 			var language = GetLanguage(source);
 			var hasCode = false;
 			var docsText = new StringBuilder();
@@ -164,7 +164,7 @@ namespace Nocco {
 			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
 
 			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-			CompilerResults results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
+			var results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
 
 			// Check for errors that may have occurred during template generation
 			if (results.Errors.HasErrors) {
