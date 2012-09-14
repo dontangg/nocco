@@ -184,11 +184,17 @@ namespace Nocco {
 		private static Dictionary<string, Language> Languages = new Dictionary<string, Language> {
 			{ ".js", new Language {
 				Name = "javascript",
-				Symbol = "//"
+				Symbol = "//",
+				Ignores = new List<string> {
+					"min.js"
+				}
 			}},
 			{ ".cs", new Language {
 				Name = "csharp",
 				Symbol = "///?",
+				Ignores = new List<string> {
+					"Designer.cs"
+				},
 				MarkdownMaps = new Dictionary<string, string> {
 					{ @"<c>([^<]*)</c>", "`$1`" },
 					{ @"<param[^\>]*>([^<]*)</param>", "" },
@@ -200,6 +206,9 @@ namespace Nocco {
 			{ ".vb", new Language {
 				Name = "vb.net",
 				Symbol = "'+",
+				Ignores = new List<string> {
+					"Designer.vb"
+				},
 				MarkdownMaps = new Dictionary<string, string> {
 					{ @"<c>([^<]*)</c>", "`$1`" },
 					{ @"<param[^\>]*>([^<]*)</param>", "" },
@@ -241,8 +250,25 @@ namespace Nocco {
 				_templateType = SetupRazorTemplate();
 
 				_files = new List<string>();
-				foreach (var target in targets)
-					_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => GetLanguage(Path.GetFileName(filename)) != null));
+				foreach (var target in targets) {
+					_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => {
+						var language = GetLanguage(Path.GetFileName(filename)) ;
+
+						if (language == null)
+							return false;
+						
+						// Check if the file extension should be ignored
+						if (language.Ignores != null && language.Ignores.Any(ignore => filename.EndsWith(ignore)))
+							return false;
+
+						// Don't include certain directories
+						var foldersToExclude = new string[] { @"\docs", @"\bin", @"\obj" };
+						if (foldersToExclude.Any(folder => Path.GetDirectoryName(filename).Contains(folder)))
+							return false;
+
+						return true;
+					}));
+				}
 
 				foreach (var file in _files)
 					GenerateDocumentation(file);

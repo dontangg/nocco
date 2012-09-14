@@ -12,5 +12,6 @@ namespace Nocco
 		public Regex CommentMatcher { get { return new Regex(@"^\s*" + Symbol + @"\s?"); } }
 		public Regex CommentFilter { get { return new Regex(@"(^#![/]|^\s*#\{)"); } }
 		public IDictionary<string, string> MarkdownMaps;
+		public IList<string> Ignores;
 	}
 }
