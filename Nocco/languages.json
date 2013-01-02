@@ -1,0 +1,142 @@
+﻿[
+   {
+      "Name":"javascript",
+      "FileExtension":".js",
+      "Symbol":"//+|/\\*\\*|\\*/|\\*",
+      "IgnoreFilenameEndings" : [],
+      "MarkdownMaps":[
+         {
+            "FindPattern":"@constructor",
+            "Replacement":"`constructor`\n"
+         },
+         {
+            "FindPattern":"@deprecated",
+            "Replacement":"`deprecated`\n"
+         },
+         {
+            "FindPattern":"@override",
+            "Replacement":"`overrides`\n"
+         },
+         {
+            "FindPattern":"@define {([^}]+)}",
+            "Replacement":"`$1`\n"
+         },
+         {
+            "FindPattern":"@this {([^}]+)}",
+            "Replacement":"keyword `this` refers to `$1`\n"
+         },
+         {
+            "FindPattern":"@param {([^}]+)} ([^ ]+)[ ]*(.*)",
+            "Replacement":"param `$2` type `$1` $3\n"
+         },
+         {
+            "FindPattern":"@return {([^}]+)}[ ]*(.*)",
+            "Replacement":"returns `$1` $2\n"
+         }
+      ]
+   },
+   {
+      "Name":"typescript",
+      "FileExtension":".ts",
+      "Symbol":"//+|/\\*\\*|\\*/|\\*",
+      "IgnoreFilenameEndings" : [],
+      "MarkdownMaps":[
+         {
+            "FindPattern":"<[ ]*reference path[ ]*=[ ]*\\\"([^<]*)\\\"[ ]*\\/[ ]*?>",
+            "Replacement":"references `$1`\n"
+         },
+         {
+            "FindPattern":"@constructor",
+            "Replacement":"`constructor`\n"
+         },
+         {
+            "FindPattern":"@deprecated",
+            "Replacement":"`deprecated`\n"
+         },
+         {
+            "FindPattern":"@override",
+            "Replacement":"`overrides`\n"
+         },
+         {
+            "FindPattern":"@define {([^}]+)}",
+            "Replacement":"`$1`\n"
+         },
+         {
+            "FindPattern":"@this {([^}]+)}",
+            "Replacement":"keyword `this` refers to `$1`\n"
+         },
+         {
+            "FindPattern":"@param {([^}]+)} ([^ ]+)[ ]*(.*)",
+            "Replacement":"param `$2` type `$1` $3\n"
+         },
+         {
+            "FindPattern":"@return {([^}]+)}[ ]*(.*)",
+            "Replacement":"returns `$1` $2\n"
+         }
+      ]
+   },
+   {
+      "Name":"csharp",
+      "FileExtension":".cs",
+      "Symbol":"///?",
+      "IgnoreFilenameEndings" : ["AssemblyInfo.cs"],
+      "IgnoreSubDirectories":[
+         "bin",
+         "obj"
+      ],
+      "MarkdownMaps":[
+         {
+            "FindPattern":"<c>([^<]*)</c>",
+            "Replacement":"`$1`"
+         },
+         {
+            "FindPattern":"<param[^\\>]*>([^<]*)</param>",
+            "Replacement":""
+         },
+         {
+            "FindPattern":"<returns>([^<]*)</returns>",
+            "Replacement":""
+         },
+         {
+            "FindPattern":"<see[ ]*cref=\\\"([^\\\"]*)\\\"[ ]*/>",
+            "Replacement":"see `$1`"
+         },
+         {
+            "FindPattern":"(</?example>|</?summary>|</?remarks>)",
+            "Replacement":""
+         }
+      ]
+   },
+   {
+      "Name":"vb.net",
+      "FileExtension":".vb",
+      "Symbol":"'+",
+      "IgnoreFilenameEndings" : [],
+      "IgnoreSubDirectories":[
+         "bin",
+         "obj"
+      ],
+      "MarkdownMaps":[
+         {
+            "FindPattern":"<c>([^<]*)</c>",
+            "Replacement":"`$1`"
+         },
+         {
+            "FindPattern":"<param[^\\>]*>([^<]*)</param>",
+            "Replacement":""
+         },
+         {
+            "FindPattern":"<returns>([^<]*)</returns>",
+            "Replacement":""
+         },
+         {
+            "FindPattern":"<see[ ]*cref=",
+            "Replacement":"see `$1`"
+         },
+         {
+            "FindPattern":"(</?example>|</?summary>|</?remarks>)",
+            "Replacement":""
+         }
+      ]
+   }
+]

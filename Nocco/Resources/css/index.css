@@ -1,0 +1,44 @@
+﻿
+.document-row
+{
+	margin-bottom: 15px;
+	min-height: 125px;
+	max-height: 165px;
+}
+
+	.document-row.odd
+	{
+		background-color: #fafafa;
+	}
+
+.document-preview .row
+{
+	max-height: 155px;
+	min-height: 125px;
+	overflow:hidden;
+	background-color: #fff;
+}
+
+	.document-preview a
+	{
+			max-height: 155px;
+	min-height: 125px;
+	overflow:hidden;
+	}
+
+
+.directory-name
+{
+	display:block;
+	margin-top:-15px;
+	margin-bottom: 15px;
+	color:#AAA;
+}
+
+
+.code-comment-label
+{
+	display: inline-block; 
+	width:75px;
+	font-weight:bold;
+}
