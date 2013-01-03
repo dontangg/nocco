@@ -18,7 +18,7 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -37,11 +37,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="CommandLineOptions.cs" />
     <Compile Include="DocumentSummary.cs" />
-    <Compile Include="Language.cs" />
+    <Compile Include="Language\CommentDefinition.cs" />
+    <Compile Include="Language\Language.cs" />
+    <Compile Include="Language\LanguageHelpers.cs" />
+    <Compile Include="Language\MarkdownMap.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="Nocco.cs" />
     <Compile Include="NoccoJob.cs" />
+    <Compile Include="Parser\LineResult.cs" />
+    <Compile Include="Parser\Parser.cs" />
     <Compile Include="PathHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +79,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\css\index.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\img\glyphicons-halflings-white.png">

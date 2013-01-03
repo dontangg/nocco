@@ -16,8 +16,6 @@ namespace Nocco
              [In] FileAttributes dwAttrTo
         );
 
-
-
         /// <summary>
         /// Returns the relative path from <paramref name="from"/> to <paramref name="to"/>
         /// </summary>

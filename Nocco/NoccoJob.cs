@@ -13,6 +13,8 @@ namespace Nocco
         public LanguageConfig Language { get; private set; }
         public string TargetExtension { get; private set; }
         public string ProjectName{ get; private set; }
+        public string IndexFilename { get; private set; }
+        public DirectoryInfo OuputFolder { get; private set; }
 
         /// <summary>
         /// Creates a new job
@@ -20,12 +22,15 @@ namespace Nocco
         /// <param name="jobBaseDirectory"></param>
         /// <param name="language"></param>
         /// <param name="targetExtension"></param>
-        public NoccoJob(DirectoryInfo jobBaseDirectory, LanguageConfig language, string targetExtension, string projectName)
+        public NoccoJob(DirectoryInfo jobBaseDirectory, LanguageConfig language, string targetExtension, string projectName,
+            DirectoryInfo outputFolder, string indexFilename)
         {
             this.JobBaseDirectory = jobBaseDirectory;
             this.Language = language;
             this.TargetExtension = targetExtension;
             this.ProjectName = projectName;
+            this.IndexFilename = indexFilename;
+            this.OuputFolder = outputFolder;
         }
 
 

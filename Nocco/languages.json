@@ -2,7 +2,19 @@
    {
       "Name":"javascript",
       "FileExtension":".js",
-      "Symbol":"//+|/\\*\\*|\\*/|\\*",
+      "CommentDefinitions": [
+        {
+            "StartsWith": "//",
+            "EndsWith": "",
+            "IgnoreRepeatingChars" : "true"
+        },
+        {
+            "StartsWith": "/*",
+            "EndsWith": "*/",
+            "TrimFromStart":[ "*"],
+            "IgnoreRepeatingChars" : "true"
+        }
+      ],
       "IgnoreFilenameEndings" : [],
       "MarkdownMaps":[
          {
@@ -38,7 +50,19 @@
    {
       "Name":"typescript",
       "FileExtension":".ts",
-      "Symbol":"//+|/\\*\\*|\\*/|\\*",
+      "CommentDefinitions": [
+        {
+            "StartsWith": "//",
+            "EndsWith": "",
+            "IgnoreRepeatingChars" : "true"
+        },
+        {
+            "StartsWith": "/*",
+            "EndsWith": "*/",
+            "TrimFromStart":[ "*"],
+            "IgnoreRepeatingChars" : "true"
+        }
+      ],
       "IgnoreFilenameEndings" : [],
       "MarkdownMaps":[
          {
@@ -78,13 +102,29 @@
    {
       "Name":"csharp",
       "FileExtension":".cs",
-      "Symbol":"///?",
+      "CommentDefinitions": [
+        {
+            "StartsWith": "//",
+            "EndsWith": "",
+            "IgnoreRepeatingChars" : "true"
+        },
+        {
+            "StartsWith": "/*",
+            "EndsWith": "*/",
+            "TrimFromStart":[ "*"],
+            "IgnoreRepeatingChars" : "true"
+        }
+      ],
       "IgnoreFilenameEndings" : ["AssemblyInfo.cs"],
       "IgnoreSubDirectories":[
          "bin",
          "obj"
       ],
       "MarkdownMaps":[
+         {
+            "FindPattern":"TODO:(.*)",
+            "Replacement":"**TODO:$1**"
+         },
          {
             "FindPattern":"<c>([^<]*)</c>",
             "Replacement":"`$1`"
@@ -110,7 +150,13 @@
    {
       "Name":"vb.net",
       "FileExtension":".vb",
-      "Symbol":"'+",
+      "CommentDefinitions": [
+        {
+            "StartsWith": "'",
+            "EndsWith": "",
+            "IgnoreRepeatingChars" : "true"
+        }
+      ],
       "IgnoreFilenameEndings" : [],
       "IgnoreSubDirectories":[
          "bin",
