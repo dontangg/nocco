@@ -49,6 +49,7 @@ namespace Nocco.Tests
                 "/*  ",
                 "*   Comment block inside of the method",
                 "*/ var x = \"with some code on the same line\";",
+                "var z = \"with //comment syntax /* in the string */\";",
                 "}"
             };
 
@@ -96,8 +97,11 @@ namespace Nocco.Tests
             QuickEnq(14, "*/", ResultType.Comment, SourceComposition.Mixed, SlashStar);
             QuickEnq(14, " var x = \"with some code on the same line\";", ResultType.Code, SourceComposition.Mixed, null);
 
+            //line of code with comment syntax inside of a string
+            QuickEnq(15, lines[14], ResultType.Code, SourceComposition.Code, null);
+            
             //end of method
-            QuickEnq(15, lines[10], ResultType.Code, SourceComposition.Code, null);
+            QuickEnq(16, lines[15], ResultType.Code, SourceComposition.Code, null);
 
 
             //action
@@ -117,6 +121,102 @@ namespace Nocco.Tests
 
             }
         }
+
+
+        [TestMethod]
+        public void VBNetStyleParse()
+        {
+            List<CommentDefinition> definitions = new List<CommentDefinition>();
+
+            var SingleQuote = new CommentDefinition
+            {
+                StartsWith = "'",
+                EndsWith = null,
+                IgnoreRepeatingChars = true
+            };
+
+            var BasicREM = new CommentDefinition
+            {
+                StartsWith = "REM ",
+                EndsWith = "",
+                IgnoreRepeatingChars = false
+            };
+
+
+            definitions.Add(SingleQuote);
+            definitions.Add(BasicREM);
+
+
+            string[] lines = new[] { 
+                "",
+                "''' <summary>",
+                "''' XML comment for method",
+                "''' </summary>",
+                "Private Shared Sub method()",
+                "REM TODO: another comment",
+                "For Each entry in File.ReadAllText(LanguageFile).FromJson<LanguageConfig[]>() 'comment",
+                "   Languages.Add(entry.FileExtension.TrimStart(new[] { \".\"C }), entry)",
+                "Dim s as string = \"This string has 'single quotes'\" 'and a comment",
+                "End Sub"
+            };
+
+
+
+            Queue<LineResult> ExpectedQueue = new Queue<LineResult>();
+
+            Action<int, string, ResultType, SourceComposition, CommentDefinition> QuickEnq = (a, b, c, d, e) =>
+            {
+                ExpectedQueue.Enqueue(new LineResult { SourceLineNumber = a, Result = b, ResultType = c, SourceLineComposition = d, MatchingDefinition = e });
+            };
+
+
+            QuickEnq(1, lines[0], ResultType.Unknown, SourceComposition.Unknown, null);
+
+            //first comment block
+            QuickEnq(2, lines[1], ResultType.Comment, SourceComposition.Comment, SingleQuote);
+            QuickEnq(3, lines[2], ResultType.Comment, SourceComposition.Comment, SingleQuote);
+            QuickEnq(4, lines[3], ResultType.Comment, SourceComposition.Comment, SingleQuote);
+
+            //code block
+            QuickEnq(5, lines[4], ResultType.Code, SourceComposition.Code, null);
+
+            //in function comment
+            QuickEnq(6, lines[5], ResultType.Comment, SourceComposition.Comment, BasicREM);
+
+
+            //line of code with a comment at the end
+            QuickEnq(7, "For Each entry in File.ReadAllText(LanguageFile).FromJson<LanguageConfig[]>() ", ResultType.Code, SourceComposition.Mixed, null);
+            QuickEnq(7, "'comment", ResultType.Comment, SourceComposition.Mixed, SingleQuote);
+
+            //line of code
+            QuickEnq(8, lines[7], ResultType.Code, SourceComposition.Code, null);
+
+            //line of code with trailing comment and matchable character in string
+            QuickEnq(9, "Dim s as string = \"This string has 'single quotes'\" ", ResultType.Code, SourceComposition.Mixed, null);
+            QuickEnq(9, "'and a comment", ResultType.Comment, SourceComposition.Mixed, SingleQuote);
+
+            //end of method
+            QuickEnq(10, lines[9], ResultType.Code, SourceComposition.Code, null);
+
+
+            //action
+            using (var reader = new StringReader(string.Join(Environment.NewLine, lines)))
+            {
+                foreach (var actual in Parser.Process(reader, definitions))
+                {
+                    var expected = ExpectedQueue.Dequeue();
+
+                    Assert.AreEqual(expected.Result, actual.Result);
+                    Assert.AreEqual(expected.ResultType, actual.ResultType);
+                    Assert.AreEqual(expected.SourceLineComposition, actual.SourceLineComposition);
+                    Assert.AreEqual(expected.SourceLineNumber, actual.SourceLineNumber);
+                    Assert.AreEqual(expected.MatchingDefinition, actual.MatchingDefinition);
+
+                }
+
+            }
+        }
+
 
 
         [TestMethod]
