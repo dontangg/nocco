@@ -74,36 +74,34 @@ namespace Nocco
 
             if (!string.IsNullOrWhiteSpace(options.OutputFolder))
             {
-          
+
                 if (Path.IsPathRooted(options.OutputFolder))
                     OutputDirectory = new DirectoryInfo(options.OutputFolder);
                 else
-                    OutputDirectory = new DirectoryInfo(Path.Combine(options.Path,  options.OutputFolder ));
+                    OutputDirectory = new DirectoryInfo(Path.Combine(options.Path, options.OutputFolder));
             }
             else
             {
                 OutputDirectory = new DirectoryInfo(Path.Combine(options.Path, App.Settings.DefaultDocsFolderName));
             }
-            
-          
-            
 
-            string IndexFilename = !string.IsNullOrWhiteSpace(options.IndexFilename) ? options.IndexFilename : App.Settings.DefaultIndexFileName;
 
-            //create new job
-            NoccoJob Job = new NoccoJob(
-                    new DirectoryInfo(options.Path),
-                    Language,
-                    options.FileType,
-                    options.ProjectName,
-                    OutputDirectory,
-                    IndexFilename);
-
+            //get a new job
+            NoccoJob Job = new NoccoJob(new DirectoryInfo(options.Path), Language, options.FileType, OutputDirectory)
+            {
+                ProjectName = options.ProjectName,
+                IndexFilename = !string.IsNullOrWhiteSpace(options.IndexFilename) ? options.IndexFilename : App.Settings.DefaultIndexFileName,
+                GenerateInlineIndex = options.GenerateInlineIndex,
+                GenerateIndexFile = options.GenerateFullIndex,
+                TruncateOutputDirectory = options.Truncate
+            };
 
             //begin processing
             Nocco.ProcessJob(Job);
 
 
+            Helpers.LogMessages("Finished processing");
+            
             Environment.Exit(0);
         }
     }

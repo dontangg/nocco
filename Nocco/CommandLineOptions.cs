@@ -17,14 +17,23 @@ namespace Nocco
         [Option("o", "output", HelpText = "The folder where the documentation will be created", Required = false)]
         public string OutputFolder { get; set; }
 
-        [Option("i", "index", HelpText = "Filename to use for the index file", Required = false)]
+        [Option("i", "indexname", HelpText = "Filename to use for the index file", Required = false)]
         public string IndexFilename { get; set; }
 
-        [Option("n", "name", DefaultValue = null, HelpText = "Name to be used in the documentation", Required = false)]
+        [Option(null, "inlineindex", HelpText = "Generate document files with an inline index", Required = false)]
+        public bool GenerateInlineIndex { get; set; }
+
+        [Option(null, "fullindex", HelpText = "Generate standable index page for generated documents", Required = false)]
+        public bool GenerateFullIndex { get; set; }
+
+        [Option("n", "projectname", DefaultValue = null, HelpText = "Name to be used in the documentation", Required = false)]
         public string ProjectName { get; set; }
 
-        [Option("v", "verbose", DefaultValue = null, HelpText = "If set, job progress information will be displayed", Required = false)]
+        [Option("v", "verbose", DefaultValue = false, HelpText = "If set, job progress information will be displayed", Required = false)]
         public bool Verbose { get; set; }
+
+        [Option(null, "truncate", DefaultValue = false, HelpText = "If set, the output directory will be truncated before the job begins", Required = false)]
+        public bool Truncate { get; set; }
 
 
     }

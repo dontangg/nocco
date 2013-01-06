@@ -25,6 +25,10 @@ namespace Nocco
 
             Helpers.LogMessages("Destination folder: " + job.OuputFolder.ToString());
 
+            //truncate output to the best of our abilities
+            if (job.TruncateOutputDirectory)
+                Helpers.TryDeleteFolderRecursively(job.OuputFolder.FullName);
+
             //create docs folder 
             if (!job.OuputFolder.Exists)
                 job.OuputFolder.Create();
@@ -46,18 +50,24 @@ namespace Nocco
             Helpers.LogMessages("Cloned base resources to destination");
 
 
+            //summary of the generated documents
             List<DocumentSummary> GeneratedDocuments = new List<DocumentSummary>();
 
+            //get the candidates
+            List<FileInfo> JobCandidates = job.GetCandidates().ToList();
+
             //process each candidate file            
-            foreach (FileInfo candidate in job.GetCandidates())
+            foreach (FileInfo candidate in JobCandidates)
             {
-                GeneratedDocuments.Add(GenerateDocumentHtml(candidate, job.OuputFolder, job));
+                GeneratedDocuments.Add(GenerateDocumentHtml(candidate, job.OuputFolder, job, JobCandidates.Except(new[] { candidate })));
             }
 
 
-            //create the index file
-            GenerateIndexHtml(job.OuputFolder, job, GeneratedDocuments);
-
+            if (job.GenerateIndexFile)
+            {
+                //create the index file
+                GenerateIndexHtml(job.OuputFolder, job, GeneratedDocuments);
+            }
 
         }
 
@@ -74,7 +84,7 @@ namespace Nocco
             var destinationFile = new FileInfo(Path.Combine(docsDirectory.FullName, job.IndexFilename));
 
             //the relative path from the destination file to the documation folder
-            string docsRelative = Helpers.GetPathRelativePathTo(destinationFile.Directory, docsDirectory);
+            string docsRelative = Helpers.GetPathRelativeTo(destinationFile.Directory, docsDirectory);
 
             AbIndexTemplate TemplateGenerator = Helpers.GetTemplateGenerator<AbIndexTemplate>(
                 new FileInfo(App.ResolveDirectory(App.Settings.IndexTemplateFile)));
@@ -91,6 +101,32 @@ namespace Nocco
             TemplateGenerator.Generate(destinationFile.FullName);
         }
 
+        /// <summary>
+        /// Get the absolute path for a generated document
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="docsDirectory"></param>
+        /// <param name="jobBaseDirectory"></param>
+        /// <returns></returns>
+        private static FileInfo GetAbsoluteDocDestination(FileInfo sourceFile, DirectoryInfo docsDirectory, DirectoryInfo jobBaseDirectory)
+        {
+            string subDirectory = sourceFile.DirectoryName.Replace(jobBaseDirectory.FullName, null).TrimStart('\\');
+
+            //if nothing was replaced, then we have no sub directory
+            if (subDirectory == sourceFile.DirectoryName)
+                subDirectory = null;
+
+
+            string docFilename = Path.ChangeExtension(sourceFile.Name, "html");
+
+
+            //the absolute destination path for the documentation file
+            return new FileInfo(Path.Combine(
+                docsDirectory.FullName,
+                subDirectory ?? string.Empty,
+                docFilename));
+        }
+
 
         /// <summary>
         /// Generates the HTML result for a single source file.
@@ -99,43 +135,48 @@ namespace Nocco
         /// <param name="docsDirectory"></param>
         /// <param name="job"></param>
         /// <returns>Generated document FileInfo</returns>
-        private static DocumentSummary GenerateDocumentHtml(FileInfo sourceFile, DirectoryInfo docsDirectory, NoccoJob job, ICollection<FileInfo> othersInSameJob = null)
+        private static DocumentSummary GenerateDocumentHtml(FileInfo sourceFile, DirectoryInfo docsDirectory, NoccoJob job, IEnumerable<FileInfo> othersInSameJob)
         {
             DocumentSummary summary = new DocumentSummary() { DocumentFile = sourceFile };
 
-            string subDirectory = sourceFile.DirectoryName.Replace(job.JobBaseDirectory.FullName, null).TrimStart('\\');
-
-            //if nothing was replaced, then we have no sub directory
-            if (subDirectory == sourceFile.DirectoryName)
-                subDirectory = null;
-            
-
-            string docFilename  = Path.ChangeExtension(sourceFile.Name, "html");
-
-
-            //the absolute destination path for the documentation file
-            var destinationFile = new FileInfo(Path.Combine(
-                docsDirectory.FullName,
-                subDirectory ?? string.Empty,
-                docFilename));
+            var destinationFile = GetAbsoluteDocDestination(sourceFile, docsDirectory, job.JobBaseDirectory);            
 
             //the relative path from the destination file to the documation folder
-            string docsRelative = Helpers.GetPathRelativePathTo(destinationFile.Directory, docsDirectory);
+            string docsRelative = Helpers.GetPathRelativeTo(destinationFile.Directory, docsDirectory);
             
             //get the opposite direction for the index page
             summary.RelativeUri = Helpers.ConvertPathSeparator(Path.Combine(
-                    Helpers.GetPathRelativePathTo(docsDirectory, destinationFile.Directory), docFilename));
+                    Helpers.GetPathRelativeTo(docsDirectory, destinationFile.Directory), destinationFile.Name));
 
             AbDocumentTemplate TemplateGenerator = Helpers.GetTemplateGenerator<AbDocumentTemplate>(
                 new FileInfo(App.ResolveDirectory(App.Settings.DocumentTemplateFile)));
+
 
             //setup template generator settings
             TemplateGenerator.Title = sourceFile.Name;
             summary.Title = TemplateGenerator.Title;
 
+            if (job.GenerateInlineIndex)
+            {
+                //list of other files in this same job, relative to myself
+                TemplateGenerator.OtherDocumentsInJob = othersInSameJob.DefaultIfEmpty()
+                            .Select(o => 
+                                {
+                                    var abs = GetAbsoluteDocDestination(o, docsDirectory, job.JobBaseDirectory);
+                                    return Path.Combine(Helpers.GetPathRelativeTo(destinationFile.Directory, abs.Directory), abs.Name);
+                                })                               
+                            .ToArray();
+            }
+            
             TemplateGenerator.Sections = ParseSections(sourceFile, job.Language, summary);
             TemplateGenerator.DocsRelative = docsRelative;
-            TemplateGenerator.IndexFile = Helpers.ConvertPathSeparator(Path.Combine(docsRelative, job.IndexFilename));
+
+
+            if (job.GenerateIndexFile)
+            {
+                TemplateGenerator.IndexFile = Helpers.ConvertPathSeparator(Path.Combine(docsRelative, job.IndexFilename));
+            }
+
 
             //generate documenation file
             TemplateGenerator.Generate(destinationFile.FullName);

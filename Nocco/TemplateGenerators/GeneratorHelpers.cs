@@ -33,8 +33,13 @@ namespace Nocco
         /// and generate the HTML.
         /// </summary>
         /// <returns></returns>
-        public static T GetTemplateGenerator<T>(FileInfo template) where T: AbTemplateGenerator
+        public static T GetTemplateGenerator<T>(FileInfo template) where T : AbTemplateGenerator
         {
+            var assembliesToInclude = new[] { 
+                typeof(Nocco).Assembly, 
+                typeof(System.IO.Path).Assembly 
+            };
+
             string key = template.FullName.ToLowerInvariant();
 
             AbTemplateGenerator Generator = null;
@@ -71,7 +76,11 @@ namespace Nocco
                 IncludeDebugInformation = false,
                 CompilerOptions = "/target:library /optimize"
             };
-            compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
+
+            foreach (var ass in assembliesToInclude)
+            {
+                compilerParams.ReferencedAssemblies.Add(ass.CodeBase.Replace("file:///", "").Replace("/", "\\"));
+            }                
 
             var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
             var results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);

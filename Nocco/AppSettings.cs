@@ -18,25 +18,24 @@ namespace Nocco
         /// Default location to output the generated files
         /// </summary>
         public string DefaultDocsFolderName { get; set; }
-        
+
         /// <summary>
         /// Default file name for the generated index file
         /// </summary>
         public string DefaultIndexFileName { get; set; }
 
-
         /// <summary>
         /// Location of the language config file
         /// </summary>
         public string LanguageConfigFile { get; set; }
-        
-        
+
+
         /// <summary>
         /// Location of resource files to include with the generated HTML files
         /// </summary>
         public string ResourceDirectory { get; set; }
-        
-        
+
+
         /// <summary>
         /// Location of the Razor template for the documentation file
         /// </summary>
@@ -56,9 +55,9 @@ namespace Nocco
         {
             BeVerbose = false,
             DefaultDocsFolderName = "docs",
-            DefaultIndexFileName = "index.html",            
+            DefaultIndexFileName = "index.html",
             DocumentTemplateFile = @".\Templates\document.cshtml",
-            IndexTemplateFile = @".\Templates\index.cshtml",            
+            IndexTemplateFile = @".\Templates\index.cshtml",
             LanguageConfigFile = @".\languages.json",
             ResourceDirectory = @".\Resources"
         };

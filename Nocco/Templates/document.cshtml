@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.IO;
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>@Title</title>
@@ -9,11 +11,30 @@
 <body onload="prettyPrint()">
     <div id="container">
         <div id="background"></div>
+        @if (OtherDocumentsInJob != null && OtherDocumentsInJob.Length > 0)
+        {
+            <div id="jump_to">
+                Jump To &hellip;
+				<div id="jump_wrapper">
+                    <div id="jump_page">
+                        @foreach (var source in OtherDocumentsInJob) {
+                            <a class="source" href="@source">
+                                @Path.GetFileNameWithoutExtension(source)
+                            </a>
+						}
+                    </div>
+                </div>
+            </div>
+		}
+
 
         <div id="descrete-header">
-            <a href="@IndexFile">&larr; Index</a>
+            @if (!string.IsNullOrEmpty(IndexFile)) {
+                <a href="@IndexFile">&larr; Index</a>
+            }
             <p>Generated @DateTime.Now.ToString()</p>
         </div>
+
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
