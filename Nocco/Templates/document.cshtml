@@ -1,0 +1,71 @@
+﻿@using System.IO;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@Title</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="@DocsRelative/css/Nocco.css" rel="stylesheet" media="all" type="text/css" />
+    <link rel="shortcut icon" href="@DocsRelative/favicon.ico"  type="image/x-icon" >
+</head>
+<body onload="prettyPrint()">
+    <div id="container">
+        <div id="background"></div>
+        @if (OtherDocumentsInJob != null && OtherDocumentsInJob.Length > 0)
+        {
+            <div id="jump_to">
+                Jump To &hellip;
+				<div id="jump_wrapper">
+                    <div id="jump_page">
+                        @foreach (var source in OtherDocumentsInJob) {
+                            <a class="source" href="@source">
+                                @Path.GetFileNameWithoutExtension(source)
+                            </a>
+						}
+                    </div>
+                </div>
+            </div>
+		}
+
+
+        <div id="descrete-header">
+            @if (!string.IsNullOrEmpty(IndexFile)) {
+                <a href="@IndexFile">&larr; Index</a>
+            }
+            <p>Generated @DateTime.Now.ToString()</p>
+        </div>
+
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="docs">
+                        <h1>@Title</h1>
+                    </th>
+                    <th class="code"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int sectionCount = 0; }
+                @foreach (var sec in Sections)
+                {
+                    sectionCount++;                    
+                 
+                    <tr id="section_@(sectionCount)">
+                        <td class="docs">
+                            <div class="pilwrap">
+                                <a class="pilcrow" href="#section_@(sectionCount)">&#182;</a>
+                            </div>
+                            @sec.DocsHtml
+                        </td>
+                        <td class="code">
+                            <pre><code class='prettyprint'>@sec.CodeHtml</code></pre>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="@DocsRelative/js/prettify.js" type="text/javascript"></script>
+</body>
+</html>

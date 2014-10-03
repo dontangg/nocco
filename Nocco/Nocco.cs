@@ -1,278 +1,289 @@
-﻿// **Nocco** is a quick-and-dirty, literate-programming-style documentation
-// generator. It is a C# port of [Docco](http://jashkenas.github.com/docco/),
-// which was written by [Jeremy Ashkenas](https://github.com/jashkenas) in
-// Coffescript and runs on node.js.
-//
-// Nocco produces HTML that displays your comments alongside your code.
-// Comments are passed through
-// [Markdown](http://daringfireball.net/projects/markdown/syntax), and code is
-// highlighted using [google-code-prettify](http://code.google.com/p/google-code-prettify/)
-// syntax highlighting. This page is the result of running Nocco against its
-// own source files.
-//
-// Currently, to build Nocco, you'll have to have Visual Studio 2010. The project
-// depends on [MarkdownSharp](http://code.google.com/p/markdownsharp/) and you'll
-// have to install [.NET MVC 3](http://www.asp.net/mvc/mvc3) to get the
-// System.Web.Razor assembly. The MarkdownSharp is a NuGet package that will be
-// installed automatically when you build the project.
-//
-// To use Nocco, run it from the command-line:
-//
-//     nocco *.cs
-//
-// ...will generate linked HTML documentation for the named source files, saving
-// it into a `docs` folder.
-//
-// The [source for Nocco](http://github.com/dontangg/nocco) is available on GitHub,
-// and released under the MIT license.
-//
-// If **.NET** doesn't run on your platform, or you'd prefer a more convenient
-// package, get [Rocco](http://rtomayko.github.com/rocco/), the Ruby port that's
-// available as a gem. If you're writing shell scripts, try
-// [Shocco](http://rtomayko.github.com/shocco/), a port for the **POSIX shell**.
-// Both are by [Ryan Tomayko](http://github.com/rtomayko). If Python's more
-// your speed, take a look at [Nick Fitzgerald](http://github.com/fitzgen)'s
-// [Pycco](http://fitzgen.github.com/pycco/).
-
-// Import namespaces to allow us to type shorter type names.
-using System;
-using System.CodeDom.Compiler;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web.Razor;
 
-namespace Nocco {
-	class Nocco {
-		private static string _executingDirectory;
-		private static List<string> _files;
-		private static Type _templateType;
+namespace Nocco
+{
+    public class Nocco
+    {
+        private static readonly MarkdownSharp.Markdown MarkdownFormatter = new MarkdownSharp.Markdown();
+              
+        /// <summary>
+        /// Generate the documentation for all files in <paramref name="job"/> 
+        /// </summary>
+        /// <param name="job"></param>
+        public static void ProcessJob(NoccoJob job)
+        {
+            Helpers.LogMessages(
+                    "Starting new job: ",
+                    "Path: " + job.JobBaseDirectory.ToString(),
+                    "Language: " + job.Language.Name
+                );
 
-		//### Main Documentation Generation Functions
+            Helpers.LogMessages("Destination folder: " + job.OuputFolder.ToString());
 
-		// Generate the documentation for a source file by reading it in, splitting it
-		// up into comment/code sections, highlighting them for the appropriate language,
-		// and merging them into an HTML template.
-		private static void GenerateDocumentation(string source) {
-			var lines = File.ReadAllLines(source);
-			var sections = Parse(source, lines);
-			Hightlight(sections);
-			GenerateHtml(source, sections);
-		}
+            //truncate output to the best of our abilities
+            if (job.TruncateOutputDirectory)
+                Helpers.TryDeleteFolderRecursively(job.OuputFolder.FullName);
 
-		// Given a string of source code, parse out each comment and the code that
-		// follows it, and create an individual `Section` for it.
-		private static List<Section> Parse(string source, string[] lines) {
-			var sections = new List<Section>();
-			var language = GetLanguage(source);
-			var hasCode = false;
-			var docsText = new StringBuilder();
-			var codeText = new StringBuilder();
+            //create docs folder 
+            if (!job.OuputFolder.Exists)
+                job.OuputFolder.Create();
 
-			Action<string, string> save = (docs, code) => sections.Add(new Section { DocsHtml = docs, CodeHtml = code });
-			Func<string, string> mapToMarkdown = docs => {
-				if (language.MarkdownMaps != null)
-					docs = language.MarkdownMaps.Aggregate(docs, (currentDocs, map) => Regex.Replace(currentDocs, map.Key, map.Value, RegexOptions.Multiline));
-				return docs;
-			};
+            //deliver resources by cloning the directory
+            string AbsoluteResourceDirectory = App.ResolveDirectory(App.Settings.ResourceDirectory);
 
-			foreach (var line in lines) {
-				if (language.CommentMatcher.IsMatch(line) && !language.CommentFilter.IsMatch(line)) {
-					if (hasCode) {
-						save(mapToMarkdown(docsText.ToString()), codeText.ToString());
-						hasCode = false;
-						docsText = new StringBuilder();
-						codeText = new StringBuilder();
-					}
-					docsText.AppendLine(language.CommentMatcher.Replace(line, ""));
-				}
-				else {
-					hasCode = true;
-					codeText.AppendLine(line);
-				}
-			}
-			save(mapToMarkdown(docsText.ToString()), codeText.ToString());
+            foreach (string file in Directory.GetFiles(AbsoluteResourceDirectory, "*.*", SearchOption.AllDirectories))
+            {
+                string destFile = file.Replace(AbsoluteResourceDirectory, job.OuputFolder.FullName);
+                string destDir = Path.GetDirectoryName(destFile);
 
-			return sections;
-		}
+                if (!Directory.Exists(destDir))
+                    Directory.CreateDirectory(destDir);
 
-		// Prepares a single chunk of code for HTML output and runs the text of its
-		// corresponding comment through **Markdown**, using a C# implementation
-		// called [MarkdownSharp](http://code.google.com/p/markdownsharp/).
-		private static void Hightlight(List<Section> sections) {
-			var markdown = new MarkdownSharp.Markdown();
+                File.Copy(file, destFile, true);
+            }
 
-			foreach (var section in sections) {
-				section.DocsHtml = markdown.Transform(section.DocsHtml);
-				section.CodeHtml = System.Web.HttpUtility.HtmlEncode(section.CodeHtml);
-			}
-		}
+            Helpers.LogMessages("Cloned base resources to destination");
 
-		// Once all of the code is finished highlighting, we can generate the HTML file
-		// and write out the documentation. Pass the completed sections into the template
-		// found in `Resources/Nocco.cshtml`
-		private static void GenerateHtml(string source, List<Section> sections) {
-			int depth;
-			var destination = GetDestination(source, out depth);
-			
-			string pathToRoot = string.Concat(Enumerable.Repeat(".." + Path.DirectorySeparatorChar, depth));
 
-			var htmlTemplate = Activator.CreateInstance(_templateType) as TemplateBase;
+            //summary of the generated documents
+            List<DocumentSummary> GeneratedDocuments = new List<DocumentSummary>();
 
-			htmlTemplate.Title = Path.GetFileName(source);
-			htmlTemplate.PathToCss = Path.Combine(pathToRoot, "nocco.css").Replace('\\', '/');
-		    htmlTemplate.PathToJs = Path.Combine(pathToRoot, "prettify.js").Replace('\\', '/');
-			htmlTemplate.GetSourcePath = s => Path.Combine(pathToRoot, Path.ChangeExtension(s.ToLower(), ".html").Substring(2)).Replace('\\', '/');
-			htmlTemplate.Sections = sections;
-			htmlTemplate.Sources = _files;
-			
-			htmlTemplate.Execute();
+            //get the candidates
+            List<FileInfo> JobCandidates = job.GetCandidates().ToList();
 
-			File.WriteAllText(destination, htmlTemplate.Buffer.ToString());
-		}
+            //process each candidate file            
+            foreach (FileInfo candidate in JobCandidates)
+            {
+                GeneratedDocuments.Add(GenerateDocumentHtml(candidate, job.OuputFolder, job, JobCandidates.Except(new[] { candidate })));
+            }
 
-		//### Helpers & Setup
 
-		// Setup the Razor templating engine so that we can quickly pass the data in
-		// and generate HTML.
-		//
-		// The file `Resources\Nocco.cshtml` is read and compiled into a new dll
-		// with a type that extends the `TemplateBase` class. This new assembly is
-		// loaded so that we can create an instance and pass data into it
-		// and generate the HTML.
-		private static Type SetupRazorTemplate() {
-			var host = new RazorEngineHost(new CSharpRazorCodeLanguage());
-			host.DefaultBaseClass = typeof(TemplateBase).FullName;
-			host.DefaultNamespace = "RazorOutput";
-			host.DefaultClassName = "Template";
-			host.NamespaceImports.Add("System");
+            if (job.GenerateIndexFile)
+            {
+                //create the index file
+                GenerateIndexHtml(job.OuputFolder, job, GeneratedDocuments);
+            }
 
-			GeneratorResults razorResult = null;
-			using (var reader = new StreamReader(Path.Combine(_executingDirectory, "Resources", "Nocco.cshtml"))) {
-				razorResult = new RazorTemplateEngine(host).GenerateCode(reader);
-			}
+        }
 
-			var compilerParams = new CompilerParameters {
-				GenerateInMemory = true,
-				GenerateExecutable = false,
-				IncludeDebugInformation = false,
-				CompilerOptions = "/target:library /optimize"
-			};
-			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
 
-			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-			var results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
+        /// <summary>
+        /// Generates the index HTML for a job.
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="docsDirectory"></param>
+        /// <param name="job"></param>
+        private static void GenerateIndexHtml(DirectoryInfo docsDirectory, NoccoJob job, ICollection<DocumentSummary> generatedDocuments)
+        {
+            //the absolute destination path for the index file
+            var destinationFile = new FileInfo(Path.Combine(docsDirectory.FullName, job.IndexFilename));
 
-			// Check for errors that may have occurred during template generation
-			if (results.Errors.HasErrors) {
-				foreach (var err in results.Errors.OfType<CompilerError>().Where(ce => !ce.IsWarning))
-					Console.WriteLine("Error Compiling Template: ({0}, {1}) {2}", err.Line, err.Column, err.ErrorText);
-			}
+            //the relative path from the destination file to the documation folder
+            string docsRelative = Helpers.GetPathRelativeTo(destinationFile.Directory, docsDirectory);
 
-			return results.CompiledAssembly.GetType("RazorOutput.Template");
-		}
+            AbIndexTemplate TemplateGenerator = Helpers.GetTemplateGenerator<AbIndexTemplate>(
+                new FileInfo(App.ResolveDirectory(App.Settings.IndexTemplateFile)));
 
-		// A list of the languages that Nocco supports, mapping the file extension to
-		// the symbol that indicates a comment. To add another language to Nocco's
-		// repertoire, add it here.
-		//
-		// You can also specify a list of regular expression patterns and replacements. This
-		// translates things like
-		// [XML documentation comments](http://msdn.microsoft.com/en-us/library/b2s063f7.aspx) into Markdown.
-		private static Dictionary<string, Language> Languages = new Dictionary<string, Language> {
-			{ ".js", new Language {
-				Name = "javascript",
-				Symbol = "//",
-				Ignores = new List<string> {
-					"min.js"
-				}
-			}},
-			{ ".cs", new Language {
-				Name = "csharp",
-				Symbol = "///?",
-				Ignores = new List<string> {
-					"Designer.cs"
-				},
-				MarkdownMaps = new Dictionary<string, string> {
-					{ @"<c>([^<]*)</c>", "`$1`" },
-					{ @"<param[^\>]*>([^<]*)</param>", "" },
-					{ @"<returns>([^<]*)</returns>", "" },
-					{ @"<see\s*cref=""([^""]*)""\s*/>", "see `$1`"},
-					{ @"(</?example>|</?summary>|</?remarks>)", "" },
-				}
-			}},
-			{ ".vb", new Language {
-				Name = "vb.net",
-				Symbol = "'+",
-				Ignores = new List<string> {
-					"Designer.vb"
-				},
-				MarkdownMaps = new Dictionary<string, string> {
-					{ @"<c>([^<]*)</c>", "`$1`" },
-					{ @"<param[^\>]*>([^<]*)</param>", "" },
-					{ @"<returns>([^<]*)</returns>", "" },
-					{ @"<see\s*cref=""([^""]*)""\s*/>", "see `$1`"},
-					{ @"(</?example>|</?summary>|</?remarks>)", "" },
-				}
-			}}
-		};
+            //setup template generator settings
+            TemplateGenerator.Title = job.ProjectName ?? "index";
+            TemplateGenerator.DocsRelative = docsRelative;
 
-		// Get the current language we're documenting, based on the extension.
-		private static Language GetLanguage(string source) {
-			var extension = Path.GetExtension(source);
-			return Languages.ContainsKey(extension) ? Languages[extension] : null;
-		}
+            var documents = generatedDocuments.ToArray();
 
-		// Compute the destination HTML path for an input source file path. If the source
-		// is `Example.cs`, the HTML will be at `docs/example.html`
-		private static string GetDestination(string filepath, out int depth) {
-			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
-			depth = dirs.Length;
+            TemplateGenerator.GeneratedDocuments = documents;
 
-			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
-			Directory.CreateDirectory(dest);
+            //generate documenation file
+            TemplateGenerator.Generate(destinationFile.FullName);
+        }
 
-			return Path.Combine("docs", Path.ChangeExtension(filepath, "html").ToLower());
-		}
+        /// <summary>
+        /// Get the absolute path for a generated document
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="docsDirectory"></param>
+        /// <param name="jobBaseDirectory"></param>
+        /// <returns></returns>
+        private static FileInfo GetAbsoluteDocDestination(FileInfo sourceFile, DirectoryInfo docsDirectory, DirectoryInfo jobBaseDirectory)
+        {
+            string subDirectory = sourceFile.DirectoryName.Replace(jobBaseDirectory.FullName, null).TrimStart('\\');
 
-		// Find all the files that match the pattern(s) passed in as arguments and
-		// generate documentation for each one.
-		public static void Generate(string[] targets) {
-			if (targets.Length > 0) {
-				Directory.CreateDirectory("docs");
+            //if nothing was replaced, then we have no sub directory
+            if (subDirectory == sourceFile.DirectoryName)
+                subDirectory = null;
 
-				_executingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				File.Copy(Path.Combine(_executingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
-				File.Copy(Path.Combine(_executingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
 
-				_templateType = SetupRazorTemplate();
+            string docFilename = Path.ChangeExtension(sourceFile.Name, "html");
 
-				_files = new List<string>();
-				foreach (var target in targets) {
-					_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => {
-						var language = GetLanguage(Path.GetFileName(filename)) ;
 
-						if (language == null)
-							return false;
-						
-						// Check if the file extension should be ignored
-						if (language.Ignores != null && language.Ignores.Any(ignore => filename.EndsWith(ignore)))
-							return false;
+            //the absolute destination path for the documentation file
+            return new FileInfo(Path.Combine(
+                docsDirectory.FullName,
+                subDirectory ?? string.Empty,
+                docFilename));
+        }
 
-						// Don't include certain directories
-						var foldersToExclude = new string[] { @"\docs", @"\bin", @"\obj" };
-						if (foldersToExclude.Any(folder => Path.GetDirectoryName(filename).Contains(folder)))
-							return false;
 
-						return true;
-					}));
-				}
+        /// <summary>
+        /// Generates the HTML result for a single source file.
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="docsDirectory"></param>
+        /// <param name="job"></param>
+        /// <returns>Generated document FileInfo</returns>
+        private static DocumentSummary GenerateDocumentHtml(FileInfo sourceFile, DirectoryInfo docsDirectory, NoccoJob job, IEnumerable<FileInfo> othersInSameJob)
+        {
+            DocumentSummary summary = new DocumentSummary() { DocumentFile = sourceFile };
 
-				foreach (var file in _files)
-					GenerateDocumentation(file);
-			}
-		}
-	}
+            var destinationFile = GetAbsoluteDocDestination(sourceFile, docsDirectory, job.JobBaseDirectory);            
+
+            //the relative path from the destination file to the documation folder
+            string docsRelative = Helpers.GetPathRelativeTo(destinationFile.Directory, docsDirectory);
+            
+            //get the opposite direction for the index page
+            summary.RelativeUri = Helpers.ConvertPathSeparator(Path.Combine(
+                    Helpers.GetPathRelativeTo(docsDirectory, destinationFile.Directory), destinationFile.Name));
+
+            AbDocumentTemplate TemplateGenerator = Helpers.GetTemplateGenerator<AbDocumentTemplate>(
+                new FileInfo(App.ResolveDirectory(App.Settings.DocumentTemplateFile)));
+
+
+            //setup template generator settings
+            TemplateGenerator.Title = sourceFile.Name;
+            summary.Title = TemplateGenerator.Title;
+
+            if (job.GenerateInlineIndex)
+            {
+                //list of other files in this same job, relative to myself
+                TemplateGenerator.OtherDocumentsInJob = othersInSameJob.DefaultIfEmpty()
+                            .Select(o => 
+                                {
+                                    var abs = GetAbsoluteDocDestination(o, docsDirectory, job.JobBaseDirectory);
+                                    return Path.Combine(Helpers.GetPathRelativeTo(destinationFile.Directory, abs.Directory), abs.Name);
+                                })                               
+                            .ToArray();
+            }
+            
+            TemplateGenerator.Sections = ParseSections(sourceFile, job.Language, summary);
+            TemplateGenerator.DocsRelative = docsRelative;
+
+
+            if (job.GenerateIndexFile)
+            {
+                TemplateGenerator.IndexFile = Helpers.ConvertPathSeparator(Path.Combine(docsRelative, job.IndexFilename));
+            }
+
+
+            //generate documenation file
+            TemplateGenerator.Generate(destinationFile.FullName);
+
+            return summary;
+        }
+
+        /// <summary>
+        /// Create separated and formatted sections for comments and code for use in documenation file 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        private static IEnumerable<Section> ParseSections(FileInfo source, LanguageConfig language, DocumentSummary summary)
+        {
+            var sections = new List<Section>();
+            var hasCode = false;
+            var docsText = new StringBuilder();
+            var codeText = new StringBuilder();
+
+            bool OkayToReplaceSection = true;
+
+            //generates a section of comment and code
+            Func<StringBuilder, StringBuilder, Section> GenerateSection = (docs, code) =>
+            {
+                var docsString = docs.ToString();
+
+                //highlight comments if required
+                if (language.MarkdownMaps != null)
+                {
+                    docsString = language.MarkdownMaps.Aggregate(docsString,
+                        (currentDocs, map) =>
+                            Regex.Replace(currentDocs, map.FindPattern, map.Replacement, RegexOptions.Multiline)
+                        );
+                }
+
+                var ret = new Section
+                {
+                    DocsHtml = MarkdownFormatter.Transform(docsString),
+                    CodeHtml = System.Web.HttpUtility.HtmlEncode(code.ToString())
+                };
+
+
+                //set the top section for the summary, just in case, but ideally we want the second block 
+                //or a block after the first which has both sections
+                if (summary.TopSection == null)
+                {
+                    //easy winner
+                    summary.TopSection = ret;
+                }
+                else if (OkayToReplaceSection)
+                {
+                    summary.TopSection = ret;
+                    OkayToReplaceSection = false;
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(summary.TopSection.CodeHtml) ||
+                        string.IsNullOrWhiteSpace(summary.TopSection.DocsHtml))
+                    {
+                        if (!string.IsNullOrWhiteSpace(ret.CodeHtml) &&
+                            !string.IsNullOrWhiteSpace(ret.DocsHtml))
+                        {
+                            //winner by content superiority
+                            summary.TopSection = ret;
+                        }
+                    }
+                }
+
+                return ret;
+
+            };
+
+            foreach (var result in Parser.Process(source, language.CommentDefinitions))
+            {
+
+                //if this line matches a comment line
+                if (result.ResultType == ResultType.Comment)
+                {
+                    //if we hit this comment line after already processing code, we need to make a new section
+                    if (hasCode)
+                    {
+                        yield return GenerateSection(docsText, codeText);
+
+                        hasCode = false;
+                        docsText = new StringBuilder();
+                        codeText = new StringBuilder();
+                    }
+
+                    //update the summary
+                    summary.LinesOfComment++;
+
+                    docsText.AppendLine(result.MatchingDefinition.CleanComment(result.Result));
+                }
+                else //hit code or unknown line
+                {
+                    //update the summary
+                    summary.LinesOfCode++;
+
+                    hasCode = true;
+                    codeText.AppendLine(result.Result);
+                }
+
+            
+           }
+
+            yield return GenerateSection(docsText, codeText);
+        }
+    }
 }

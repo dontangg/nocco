@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@Title</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="@DocsRelative/css/bootstrap.css" rel="stylesheet" media="all" type="text/css" />
+    <link href="@DocsRelative/css/index.css" rel="stylesheet" media="all" type="text/css" />
+    <link rel="shortcut icon" href="@DocsRelative/favicon.ico"  type="image/x-icon" >
+</head>
+
+@{
+    Func<int, string> x = (i) => i == 0 ? "warning" : "info";
+    int curGenDoc = 0;
+}
+
+<body>
+    <div class="container">
+
+        <div class="page-header">
+            <h1>@Title</h1>
+            <p class="quiet">Generated @DateTime.Now.ToString()</p>
+        </div>
+
+
+
+
+        @foreach (var doc in GeneratedDocuments)
+        {             
+            <div class="row document-row @(curGenDoc++ % 2 == 0 ? "even" : "odd")">
+                <div class="span5">
+                    <h3><a href="@doc.RelativeUri">@doc.Title</a></h3>
+                    <span class="directory-name">/@doc.RelativeDirectory</span>
+                    <span class="code-comment-label">Code</span>
+                    <span class="badge badge-@x(doc.LinesOfCode)">@doc.LinesOfCode</span><br />
+                    <span class="code-comment-label">Comment</span>
+                    <span class="badge badge-@x(doc.LinesOfComment)">@doc.LinesOfComment</span>
+                </div>
+                <div class="span7 document-preview">
+                    <a href="@doc.RelativeUri" class="thumbnail">
+                        <div class="row">
+                            <div class="span3" style="background-color: aliceblue;">
+                                @doc.GetSectionDocForDisplay()
+                            </div>
+                            <div class="span3">
+                                @doc.GetSectionCodeForDisplay()
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        }
+
+
+
+
+    </div>
+
+    @*<script src="@DocsRelative/js/jquery-1.8.3.min.js" type="text/javascript"></script>*@
+
+    @*<script src="@DocsRelative/js/bootstrap.min.js" type="text/javascript"></script>*@
+</body>
+</html>
