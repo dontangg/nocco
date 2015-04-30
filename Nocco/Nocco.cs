@@ -197,8 +197,8 @@ namespace Nocco {
 				},
 				MarkdownMaps = new Dictionary<string, string> {
 					{ @"<c>([^<]*)</c>", "`$1`" },
-					{ @"<param[^\>]*>([^<]*)</param>", "" },
-					{ @"<returns>([^<]*)</returns>", "" },
+					{ @"<param[^\>]*name=""([^""]*)""[^\>]*>([^<]*)</param>", "**argument** *$1*: $2" + Environment.NewLine },
+					{ @"<returns>([^<]*)</returns>", "**returns**: $1" + Environment.NewLine },
 					{ @"<see\s*cref=""([^""]*)""\s*/>", "see `$1`"},
 					{ @"(</?example>|</?summary>|</?remarks>)", "" },
 				}
