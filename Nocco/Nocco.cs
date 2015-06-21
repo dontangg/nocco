@@ -160,7 +160,13 @@ namespace Nocco {
 				IncludeDebugInformation = false,
 				CompilerOptions = "/target:library /optimize"
 			};
-			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"));
+
+			// Use directory separator char to determine filesystem root i.e. "/" (Linux) vs. "" (Windows)
+			var filesystemRoot = "";
+			if (Path.DirectorySeparatorChar == '/') {
+				filesystemRoot = "/";
+			}
+			compilerParams.ReferencedAssemblies.Add(typeof(Nocco).Assembly.CodeBase.Replace("file:///", filesystemRoot).Replace("/", Path.DirectorySeparatorChar.ToString()));
 
 			var codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
 			var results = codeProvider.CompileAssemblyFromDom(compilerParams, razorResult.GeneratedCode);
