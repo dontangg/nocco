@@ -182,6 +182,10 @@ namespace Nocco {
 		// translates things like
 		// [XML documentation comments](http://msdn.microsoft.com/en-us/library/b2s063f7.aspx) into Markdown.
 		private static Dictionary<string, Language> Languages = new Dictionary<string, Language> {
+			{ ".sql", new Language {
+				Name = "sql",
+				Symbol = "--",
+			}},
 			{ ".js", new Language {
 				Name = "javascript",
 				Symbol = "//",
