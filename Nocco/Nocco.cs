@@ -47,6 +47,7 @@ using System.Web.Razor;
 namespace Nocco {
 	class Nocco {
 		private static string _executingDirectory;
+		private static string _destinationDirectory = "docs";
 		private static List<string> _files;
 		private static Type _templateType;
 
@@ -235,47 +236,86 @@ namespace Nocco {
 			var dirs = Path.GetDirectoryName(filepath).Substring(1).Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 			depth = dirs.Length;
 
-			var dest = Path.Combine("docs", string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
+			var dest = Path.Combine(_destinationDirectory, string.Join(Path.DirectorySeparatorChar.ToString(), dirs)).ToLower();
 			Directory.CreateDirectory(dest);
 
-			return Path.Combine("docs", Path.ChangeExtension(filepath, "html").ToLower());
+			return Path.Combine(_destinationDirectory, Path.ChangeExtension(filepath, "html").ToLower());
 		}
 
 		// Find all the files that match the pattern(s) passed in as arguments and
 		// generate documentation for each one.
 		public static void Generate(string[] targets) {
-			if (targets.Length > 0) {
-				Directory.CreateDirectory("docs");
+			int i;
+			string target;
 
+			if (targets.Length == 0)
+			{
+				Console.WriteLine("");
+				System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				Console.WriteLine("nocco - Version " + System.Reflection.AssemblyName.GetAssemblyName(assembly.Location).Version.ToString());
+				Console.WriteLine("");
+				Console.WriteLine("  Usage: nocco [options] <filePattern ...>");
+				Console.WriteLine("");
+				Console.WriteLine("  Options:");
+				Console.WriteLine("");
+				Console.WriteLine("    -o, --output [path]    use a custom output path");
+			} 
+			else 
+			{
 				_executingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				File.Copy(Path.Combine(_executingDirectory, "Resources", "Nocco.css"), Path.Combine("docs", "nocco.css"), true);
-				File.Copy(Path.Combine(_executingDirectory, "Resources", "prettify.js"), Path.Combine("docs", "prettify.js"), true);
 
 				_templateType = SetupRazorTemplate();
 
 				_files = new List<string>();
-				foreach (var target in targets) {
-					_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename => {
-						var language = GetLanguage(Path.GetFileName(filename)) ;
+				for(i=0; i<targets.Length; i++ ) {
+					target = targets[i];
 
-						if (language == null)
-							return false;
-						
-						// Check if the file extension should be ignored
-						if (language.Ignores != null && language.Ignores.Any(ignore => filename.EndsWith(ignore)))
-							return false;
+					if (target == "-o" || target == "--output")
+					{
+						_destinationDirectory = targets[i + 1];
+						i++;
+					}
+					else if (target[0] == '-')
+					{
+						Console.WriteLine("Invalid option: " + target);
+						break;
+					}
+					else
+					{
+						_files.AddRange(Directory.GetFiles(".", target, SearchOption.AllDirectories).Where(filename =>
+						{
+							var language = GetLanguage(Path.GetFileName(filename));
 
-						// Don't include certain directories
-						var foldersToExclude = new string[] { @"\docs", @"\bin", @"\obj" };
-						if (foldersToExclude.Any(folder => Path.GetDirectoryName(filename).Contains(folder)))
-							return false;
+							if (language == null)
+								return false;
 
-						return true;
-					}));
+                            				// Check if the file extension should be ignored
+                            				if (language.Ignores != null && language.Ignores.Any(ignore => filename.EndsWith(ignore)))
+				                                return false;
+
+							// Don't include certain directories
+							var foldersToExclude = new string[] { @"\docs", @"\bin", @"\obj" };
+							if (foldersToExclude.Any(folder => Path.GetDirectoryName(filename).Contains(folder)))
+								return false;
+
+							return true;
+						}));
+					}
 				}
-
-				foreach (var file in _files)
-					GenerateDocumentation(file);
+				try
+				{
+					Directory.CreateDirectory(_destinationDirectory);
+					File.Copy(Path.Combine(_executingDirectory, "Resources", "Nocco.css"), Path.Combine(_destinationDirectory, "nocco.css"), true);
+					File.Copy(Path.Combine(_executingDirectory, "Resources", "prettify.js"), Path.Combine(_destinationDirectory, "prettify.js"), true);
+					foreach (var file in _files)
+					{
+						GenerateDocumentation(file);
+					}
+				}
+				catch 
+				{
+					Console.WriteLine("Error during generation! Perhaps output directory could not be created.");
+				}
 			}
 		}
 	}
